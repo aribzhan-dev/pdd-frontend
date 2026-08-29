@@ -1,0 +1,36 @@
+# --- Secrets ---
+# Vite exposes anything prefixed VITE_ to the browser, so nothing secret
+# belongs here in the first place — but the file is still per-environment.
+.env
+.env.*
+!.env.example
+
+# --- Dependencies ---
+node_modules/
+.npm-cache/
+.pnpm-store/
+
+# --- Build output ---
+# Rebuilt from source on every deploy; committing it invites the repository
+# and the running site to disagree.
+dist/
+dist-ssr/
+
+# --- Caches ---
+*.tsbuildinfo
+.vite/
+.eslintcache
+
+# --- Logs ---
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Editors and OS ---
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# --- Tooling state ---
+.claude/

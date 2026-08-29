@@ -1,0 +1,54 @@
+/* Confirmation dialog. The native <dialog> centres itself and paints the
+   backdrop; everything here is about making it look like the rest of the app
+   instead of like the browser's own prompt. */
+.dialog {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  padding: 0;
+  max-width: min(28rem, calc(100vw - 2rem));
+  box-shadow: 0 12px 40px rgba(22, 48, 92, 0.18);
+}
+
+.dialog::backdrop {
+  background: rgba(22, 48, 92, 0.35);
+  backdrop-filter: blur(2px);
+}
+
+.dialog__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+.dialog__title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.dialog__text {
+  margin: 0;
+  color: var(--color-ink-soft);
+  line-height: 1.5;
+}
+
+.dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+@media (max-width: 480px) {
+  .dialog__actions {
+    flex-direction: column-reverse;
+  }
+
+  .dialog__actions .btn {
+    width: 100%;
+  }
+}
