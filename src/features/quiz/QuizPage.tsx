@@ -109,6 +109,7 @@ export function QuizPage({ language, onLanguageChange }: QuizPageProps) {
         items={session.items}
         currentPosition={position}
         answeredCount={session.answered_count}
+        revealsAnswers={session.reveals_answers}
         onSelect={quiz.goTo}
         trailing={
           session.seconds_left !== null ? (
@@ -150,7 +151,13 @@ export function QuizPage({ language, onLanguageChange }: QuizPageProps) {
             isSubmitting={quiz.isSubmitting}
           />
 
-          {isAnswered && (
+          {/* The exam says nothing until it is handed in — only that the
+              answer was recorded. */}
+          {isAnswered && !session.reveals_answers && (
+            <div className="verdict verdict--noted">{UI.answerRecorded}</div>
+          )}
+
+          {isAnswered && session.reveals_answers && (
             <div
               className={`verdict ${item.is_correct ? "verdict--ok" : "verdict--no"}`}
             >
@@ -158,14 +165,16 @@ export function QuizPage({ language, onLanguageChange }: QuizPageProps) {
             </div>
           )}
 
-          {isAnswered && (quiz.feedback?.explanation ?? question.explanation) && (
-            <div className="explanation">
-              <p className="explanation__label">{UI.explanation}</p>
-              <p className="explanation__text">
-                {quiz.feedback?.explanation ?? question.explanation}
-              </p>
-            </div>
-          )}
+          {isAnswered &&
+            session.reveals_answers &&
+            (quiz.feedback?.explanation ?? question.explanation) && (
+              <div className="explanation">
+                <p className="explanation__label">{UI.explanation}</p>
+                <p className="explanation__text">
+                  {quiz.feedback?.explanation ?? question.explanation}
+                </p>
+              </div>
+            )}
 
           {quiz.error && <div className="notice notice--error">{quiz.error}</div>}
 

@@ -39,6 +39,8 @@ export function AnswerList({
   onChoose,
   isSubmitting,
 }: AnswerListProps) {
+  // The exam never sends a correct flag while it runs, so nothing is coloured
+  // and the pick is only highlighted.
   const isVerdictKnown = answers.some((answer) => answer.is_correct === true);
 
   return (

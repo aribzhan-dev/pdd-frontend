@@ -10,11 +10,10 @@ import { staffApi } from "@/api/staff";
 import { useAuth } from "@/features/auth/AuthContext";
 import { StudentForm } from "@/features/staff/StudentForm";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { ExtendAccessDialog } from "@/features/staff/ExtendAccessDialog";
 import { UI } from "@/i18n/strings";
 import { formatDate, pluralDays } from "@/lib/format";
 import type { CredentialsIssued, LabeledValue, Student } from "@/types/api";
-
-const EXTEND_DAYS = 30;
 
 export function StudentsPage() {
   const { role } = useAuth();
@@ -26,9 +25,9 @@ export function StudentsPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [issued, setIssued] = useState<CredentialsIssued | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [pendingRemoval, setPendingRemoval] = useState<Student | null>(
-    null,
-  );
+  const [pendingRemoval, setPendingRemoval] = useState<Student | null>(null);
+  const [pendingExtension, setPendingExtension] = useState<Student | null>(null);
+  const [isExtending, setIsExtending] = useState(false);
 
   const load = useCallback(async () => {
     setError(null);
@@ -51,12 +50,16 @@ export function StudentsPage() {
       .catch(() => setCategories([]));
   }, []);
 
-  async function extend(student: Student): Promise<void> {
+  async function extend(student: Student, days: number): Promise<void> {
+    setIsExtending(true);
     try {
-      await staffApi.updateStudent(student.id, { extend_days: EXTEND_DAYS });
+      await staffApi.updateStudent(student.id, { extend_days: days });
+      setPendingExtension(null);
       await load();
     } catch (cause) {
       setError(cause instanceof ApiError ? cause.message : UI.error);
+    } finally {
+      setIsExtending(false);
     }
   }
 
@@ -82,6 +85,15 @@ export function StudentsPage() {
           if (pendingRemoval) void remove(pendingRemoval);
         }}
         onCancel={() => setPendingRemoval(null)}
+      />
+
+      <ExtendAccessDialog
+        student={pendingExtension}
+        isBusy={isExtending}
+        onConfirm={(days) => {
+          if (pendingExtension) void extend(pendingExtension, days);
+        }}
+        onCancel={() => setPendingExtension(null)}
       />
 
       <div className="spread">
@@ -186,9 +198,9 @@ export function StudentsPage() {
                     <div className="row">
                       <button
                         className="btn btn--link"
-                        onClick={() => void extend(student)}
+                        onClick={() => setPendingExtension(student)}
                       >
-                        +{EXTEND_DAYS} дн.
+                        {UI.extend}
                       </button>
                       {isAdmin && (
                         <button

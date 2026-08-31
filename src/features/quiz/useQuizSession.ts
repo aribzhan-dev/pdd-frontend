@@ -42,7 +42,7 @@ function applyAnswer(
   items: ItemState[],
   questionId: number,
   answerId: number,
-  isCorrect: boolean,
+  isCorrect: boolean | null,
 ): ItemState[] {
   return items.map((item) =>
     item.question_id === questionId
@@ -64,6 +64,11 @@ function revealAnswers(
   questionId: number,
   result: AnswerResult,
 ): Question[] {
+  // The exam withholds the verdict, so there is nothing to fold in and the
+  // options must stay uncoloured.
+  if (!result.reveals_answer || result.correct_answer_id === null) {
+    return questions;
+  }
   return questions.map((question) =>
     question.id === questionId
       ? {
@@ -150,12 +155,12 @@ export function useQuizSession(): QuizState {
                 answered_count: result.answered_count,
                 can_finish: result.can_finish,
                 correct_count:
-                  current.correct_count + (result.is_correct ? 1 : 0),
+                  current.correct_count + (result.is_correct === true ? 1 : 0),
                 items: applyAnswer(
                   current.items,
                   question.id,
                   answerId,
-                  result.is_correct,
+                  result.reveals_answer ? result.is_correct : null,
                 ),
                 questions: revealAnswers(current.questions, question.id, result),
               },

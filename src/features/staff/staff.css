@@ -27,3 +27,32 @@ select.field__input {
   background-size: 5px 5px;
   background-repeat: no-repeat;
 }
+
+/* Preset lengths for extending access — the common choices, one tap away. */
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.preset {
+  flex: 1 0 auto;
+  min-width: 3.5rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-variant-numeric: tabular-nums;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.preset:hover {
+  border-color: var(--color-primary);
+}
+
+.preset.is-active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+  color: var(--color-primary-hover);
+  font-weight: 500;
+}

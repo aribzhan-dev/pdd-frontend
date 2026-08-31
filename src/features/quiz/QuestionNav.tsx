@@ -17,19 +17,27 @@ interface QuestionNavProps {
   items: ItemState[];
   currentPosition: number;
   answeredCount: number;
+  /** False during the exam: chips may say "answered", never right or wrong. */
+  revealsAnswers: boolean;
   onSelect: (position: number) => void;
   /** Rendered at the end of the strip — the exam clock sits here. */
   trailing?: ReactNode;
 }
 
-function chipModifier(item: ItemState, isCurrent: boolean): string {
+function chipModifier(
+  item: ItemState,
+  isCurrent: boolean,
+  reveals: boolean,
+): string {
   if (isCurrent) return "chip--current";
   if (!item.is_answered) return "chip--idle";
+  if (!reveals) return "chip--answered";
   return item.is_correct ? "chip--correct" : "chip--wrong";
 }
 
-function chipTitle(item: ItemState): string {
+function chipTitle(item: ItemState, reveals: boolean): string {
   if (!item.is_answered) return "Без ответа";
+  if (!reveals) return "Отвечено";
   return item.is_correct ? "Верно" : "Неверно";
 }
 
@@ -37,6 +45,7 @@ export function QuestionNav({
   items,
   currentPosition,
   answeredCount,
+  revealsAnswers,
   onSelect,
   trailing,
 }: QuestionNavProps) {
@@ -66,8 +75,8 @@ export function QuestionNav({
               <button
                 key={item.position}
                 type="button"
-                className={`chip ${chipModifier(item, isCurrent)}`}
-                title={chipTitle(item)}
+                className={`chip ${chipModifier(item, isCurrent, revealsAnswers)}`}
+                title={chipTitle(item, revealsAnswers)}
                 aria-current={isCurrent ? "true" : undefined}
                 onClick={() => onSelect(item.position)}
               >

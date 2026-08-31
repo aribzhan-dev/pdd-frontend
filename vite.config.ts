@@ -6,6 +6,11 @@ import { fileURLToPath, URL } from "node:url";
 // the browser on a single origin, so no CORS preflight and no absolute URLs.
 export default defineConfig({
   plugins: [react()],
+  build: {
+    // No source maps in the shipped bundle: they would publish the readable
+    // original source next to the minified build.
+    sourcemap: false,
+  },
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },

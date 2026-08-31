@@ -25,6 +25,7 @@ export const UI = {
   showPassword: "Показать пароль",
   hidePassword: "Скрыть пароль",
   loginHint: "Логин и пароль выдаёт учебный центр",
+  contactUs: "Связаться с нами",
 
   // Navigation
   topics: "Темы",
@@ -56,6 +57,7 @@ export const UI = {
   next: "Далее",
   correct: "Верно",
   wrong: "Неверно",
+  answerRecorded: "Ответ записан",
   explanation: "Пояснение",
   situation: "Ситуация",
   answeredOf: (answered: number, total: number) => `Отвечено ${answered} из ${total}`,
@@ -104,7 +106,11 @@ export const UI = {
   remove: "Удалить",
   confirmRemove: "Удалить безвозвратно?",
   credentialsIssued: "Аккаунт создан — передайте данные студенту",
-  extendDays: "Продлить (дней)",
+  extendDays: "На сколько дней продлить",
+  extend: "Продлить",
+  extendAccess: "Продление доступа",
+  newExpiry: "Новая дата окончания",
+  accessLapsed: "срок истёк",
   nothingFound: "Ничего не найдено",
   lastLogin: "Последний вход",
   never: "Не входил",

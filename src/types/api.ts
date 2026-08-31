@@ -68,17 +68,21 @@ export interface Session {
   seconds_left: number | null;
   /** Slot to open on load: the first unanswered one. */
   current_position: number;
+  /** False while an exam runs: show answered/unanswered only, never correctness. */
+  reveals_answers: boolean;
   items: ItemState[];
   questions: Question[];
 }
 
 export interface AnswerResult {
-  is_correct: boolean;
-  correct_answer_id: number;
+  /** Null during the exam: the verdict is withheld until the run is handed in. */
+  is_correct: boolean | null;
+  correct_answer_id: number | null;
   explanation: string | null;
   explanation_video_url: string | null;
   can_finish: boolean;
   answered_count: number;
+  reveals_answer: boolean;
 }
 
 export interface QuestionReview {

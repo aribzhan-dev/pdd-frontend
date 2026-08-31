@@ -11,6 +11,15 @@ import { UI } from "@/i18n/strings";
 
 const IIN_LENGTH = 12;
 
+//: WhatsApp opens with the message already written, so a prospective student
+//: only has to press send. The number is in international form without "+",
+//: which is what wa.me expects.
+const CONTACT_PHONE = "77756270762";
+const CONTACT_MESSAGE = "Здравствуйте! Хотел бы узнать подробнее.";
+const CONTACT_URL = `https://wa.me/${CONTACT_PHONE}?text=${encodeURIComponent(
+  CONTACT_MESSAGE,
+)}`;
+
 export function LoginPage() {
   const { signIn } = useAuth();
   const [iin, setIin] = useState("");
@@ -68,6 +77,15 @@ export function LoginPage() {
         </button>
 
         <p className="login__hint">{UI.loginHint}</p>
+
+        <a
+          className="login__contact"
+          href={CONTACT_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {UI.contactUs}
+        </a>
       </form>
     </div>
   );
