@@ -56,3 +56,40 @@ select.field__input {
   color: var(--color-primary-hover);
   font-weight: 500;
 }
+
+/* Student detail view: a read-only record with actions, opened from a row. */
+.dialog--wide {
+  max-width: min(34rem, calc(100vw - 2rem));
+}
+
+.details {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+}
+
+.details dt {
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
+}
+
+.details dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A whole student row opens the detail view; make that affordance clear. */
+.row-link {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--color-primary);
+  cursor: pointer;
+  text-align: left;
+}
+
+.row-link:hover {
+  text-decoration: underline;
+}

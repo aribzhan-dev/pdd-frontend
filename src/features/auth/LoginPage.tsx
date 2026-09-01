@@ -10,6 +10,9 @@ import { useAuth } from "@/features/auth/AuthContext";
 import { UI } from "@/i18n/strings";
 
 const IIN_LENGTH = 12;
+//: Every issued password is at least this long (enforced by the backend), so
+//: a shorter entry is necessarily a typo — no point sending it.
+const MIN_PASSWORD_LENGTH = 6;
 
 //: WhatsApp opens with the message already written, so a prospective student
 //: only has to press send. The number is in international form without "+",
@@ -71,7 +74,11 @@ export function LoginPage() {
         <button
           type="submit"
           className="btn btn--primary btn--block"
-          disabled={isSubmitting || iin.length !== IIN_LENGTH || !password}
+          disabled={
+            isSubmitting ||
+            iin.length !== IIN_LENGTH ||
+            password.length < MIN_PASSWORD_LENGTH
+          }
         >
           {isSubmitting ? UI.signingIn : UI.signIn}
         </button>

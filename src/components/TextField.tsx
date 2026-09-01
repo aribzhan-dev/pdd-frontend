@@ -12,6 +12,7 @@ interface TextFieldProps {
   required?: boolean;
   inputMode?: "text" | "numeric" | "tel";
   maxLength?: number;
+  readOnly?: boolean;
 }
 
 export function TextField({
@@ -24,6 +25,7 @@ export function TextField({
   required = false,
   inputMode,
   maxLength,
+  readOnly = false,
 }: TextFieldProps) {
   const inputId = useId();
 
@@ -41,6 +43,7 @@ export function TextField({
           required={required}
           inputMode={inputMode}
           maxLength={maxLength}
+          readOnly={readOnly}
           onChange={(event) => onChange(event.target.value)}
         />
       </span>

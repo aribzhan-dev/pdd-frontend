@@ -41,13 +41,38 @@ function buildUrl(path: string, query?: RequestOptions["query"]): string {
   return url.pathname + url.search;
 }
 
+// FastAPI 422 issues name the field and the rule that failed. These are the
+// ones a person can actually act on; anything else falls back to the generic.
+function describeValidationIssue(issue: unknown): string | null {
+  if (typeof issue !== "object" || issue === null) return null;
+  const { loc, type } = issue as { loc?: unknown[]; type?: string };
+  const field = Array.isArray(loc) ? loc[loc.length - 1] : undefined;
+
+  if (field === "password") {
+    if (type === "string_too_short") {
+      return "Пароль должен содержать минимум 6 символов";
+    }
+    return "Проверьте пароль";
+  }
+  if (field === "iin") return "ИИН должен состоять из 12 цифр";
+  if (field === "phone_number") return "Проверьте номер телефона";
+  return null;
+}
+
 async function readError(response: Response): Promise<string> {
   try {
     const payload = await response.json();
     if (typeof payload?.error === "string") return payload.error;
     if (typeof payload?.detail === "string") return payload.detail;
-    // FastAPI validation errors arrive as a list of issues.
-    if (Array.isArray(payload?.detail)) return "Проверьте правильность полей";
+    // FastAPI validation errors arrive as a list of issues — surface the first
+    // one we can phrase for a person, else a generic prompt.
+    if (Array.isArray(payload?.detail)) {
+      for (const issue of payload.detail) {
+        const described = describeValidationIssue(issue);
+        if (described) return described;
+      }
+      return "Проверьте правильность полей";
+    }
   } catch {
     // Body was not JSON — fall through to the generic message.
   }
