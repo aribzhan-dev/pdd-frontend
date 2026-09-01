@@ -93,3 +93,37 @@ select.field__input {
 .row-link:hover {
   text-decoration: underline;
 }
+
+/* Row actions as icon buttons: compact, neutral until hovered. Each keeps a
+   title/aria-label so the meaning is available to a pointer and a screen
+   reader alike. */
+.row-actions {
+  display: flex;
+  gap: var(--space-1);
+  justify-content: flex-end;
+}
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.icon-btn:hover {
+  background: var(--color-primary-soft);
+  color: var(--color-primary-hover);
+}
+
+.icon-btn--danger:hover {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+}

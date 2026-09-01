@@ -13,6 +13,7 @@ import { useAuth } from "@/features/auth/AuthContext";
 import { StudentForm } from "@/features/staff/StudentForm";
 import { StudentDetailDialog } from "@/features/staff/StudentDetailDialog";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { EditIcon, ExtendIcon, TrashIcon, ViewIcon } from "@/components/Icons";
 import { ExtendAccessDialog } from "@/features/staff/ExtendAccessDialog";
 import { UI } from "@/i18n/strings";
 import { formatDate, pluralDays } from "@/lib/format";
@@ -249,25 +250,43 @@ export function StudentsPage() {
                       : UI.never}
                   </td>
                   <td>
-                    <div className="row">
+                    <div className="row-actions">
                       <button
-                        className="btn btn--link"
-                        onClick={() => openEdit(student)}
+                        type="button"
+                        className="icon-btn"
+                        title={UI.open}
+                        aria-label={UI.open}
+                        onClick={() => setViewing(student)}
                       >
-                        {UI.edit}
+                        <ViewIcon />
                       </button>
                       <button
-                        className="btn btn--link"
+                        type="button"
+                        className="icon-btn"
+                        title={UI.edit}
+                        aria-label={UI.edit}
+                        onClick={() => openEdit(student)}
+                      >
+                        <EditIcon />
+                      </button>
+                      <button
+                        type="button"
+                        className="icon-btn"
+                        title={UI.extend}
+                        aria-label={UI.extend}
                         onClick={() => setPendingExtension(student)}
                       >
-                        {UI.extend}
+                        <ExtendIcon />
                       </button>
                       {isAdmin && (
                         <button
-                          className="btn btn--link"
+                          type="button"
+                          className="icon-btn icon-btn--danger"
+                          title={UI.remove}
+                          aria-label={UI.remove}
                           onClick={() => setPendingRemoval(student)}
                         >
-                          {UI.remove}
+                          <TrashIcon />
                         </button>
                       )}
                     </div>
