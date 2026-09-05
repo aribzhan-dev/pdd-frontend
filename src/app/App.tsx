@@ -1,32 +1,25 @@
-// Application root: holds the language choice and mounts the router.
+// Application root: providers and the router.
+//
+// Language lives in its own provider rather than in state here, because two
+// very different things depend on it — the dictionary of interface strings and
+// the `lang` parameter on content requests — and screens deep in the tree need
+// both. Passing it down as a prop meant only the screens that remembered to
+// thread it through actually switched.
 
-import { useState } from "react";
 import { BrowserRouter } from "react-router-dom";
 
 import { AppRoutes } from "@/app/routes";
 import { AuthProvider } from "@/features/auth/AuthContext";
-import { languageStorage } from "@/lib/storage";
-import type { Language } from "@/types/api";
-
-const DEFAULT_LANGUAGE: Language = "ru";
-
-function readStoredLanguage(): Language {
-  return languageStorage.get() === "kz" ? "kz" : DEFAULT_LANGUAGE;
-}
+import { LanguageProvider } from "@/i18n/LanguageContext";
 
 export function App() {
-  const [language, setLanguage] = useState<Language>(readStoredLanguage);
-
-  function changeLanguage(next: Language): void {
-    setLanguage(next);
-    languageStorage.set(next);
-  }
-
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <AppRoutes language={language} onLanguageChange={changeLanguage} />
-      </AuthProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <AppRoutes />
+        </AuthProvider>
+      </LanguageProvider>
     </BrowserRouter>
   );
 }

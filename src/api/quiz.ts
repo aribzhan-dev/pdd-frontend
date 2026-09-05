@@ -14,9 +14,11 @@ export type QuizMode = "topic" | "exam" | "training" | "mistakes";
 
 export const quizApi = {
   /** Returns null (HTTP 204) when there is no unfinished session. */
-  getActive: () => request<Session | null>("/quiz/active"),
+  getActive: (lang: Language) =>
+    request<Session | null>("/quiz/active", { query: { lang } }),
 
-  get: (sessionId: number) => request<Session>(`/quiz/sessions/${sessionId}`),
+  get: (sessionId: number, lang: Language) =>
+    request<Session>(`/quiz/sessions/${sessionId}`, { query: { lang } }),
 
   start: (mode: QuizMode, language: Language, topicId?: number) =>
     request<Session>("/quiz/sessions", {
@@ -24,19 +26,28 @@ export const quizApi = {
       body: { mode, language, topic_id: topicId ?? null },
     }),
 
-  answer: (sessionId: number, questionId: number, answerId: number) =>
+  answer: (
+    sessionId: number,
+    questionId: number,
+    answerId: number,
+    lang: Language,
+  ) =>
     request<AnswerResult>(`/quiz/sessions/${sessionId}/answers`, {
       method: "POST",
       body: { question_id: questionId, answer_id: answerId },
+      query: { lang },
     }),
 
-  finish: (sessionId: number) =>
+  finish: (sessionId: number, lang: Language) =>
     request<SessionResult>(`/quiz/sessions/${sessionId}/finish`, {
       method: "POST",
+      query: { lang },
     }),
 
-  result: (sessionId: number) =>
-    request<SessionResult>(`/quiz/sessions/${sessionId}/result`),
+  result: (sessionId: number, lang: Language) =>
+    request<SessionResult>(`/quiz/sessions/${sessionId}/result`, {
+      query: { lang },
+    }),
 
   history: (page = 1, limit = 20) =>
     request<Page<ResultBrief>>("/quiz/history", { query: { page, limit } }),

@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 
-import { UI } from "@/i18n/strings";
+import { useStrings } from "@/i18n/LanguageContext";
 
 interface PasswordFieldProps {
   value: string;
@@ -16,17 +16,18 @@ interface PasswordFieldProps {
 export function PasswordField({
   value,
   onChange,
-  label = UI.password,
+  label,
   placeholder,
   autoComplete = "current-password",
   required = true,
 }: PasswordFieldProps) {
+  const t = useStrings();
   const [isVisible, setIsVisible] = useState(false);
   const inputId = useId();
 
   return (
     <label className="field" htmlFor={inputId}>
-      <span className="field__label">{label}</span>
+      <span className="field__label">{label ?? t.password}</span>
       <span className="field__control">
         <input
           id={inputId}
@@ -42,8 +43,8 @@ export function PasswordField({
           type="button"
           className="field__toggle"
           onClick={() => setIsVisible((shown) => !shown)}
-          aria-label={isVisible ? UI.hidePassword : UI.showPassword}
-          title={isVisible ? UI.hidePassword : UI.showPassword}
+          aria-label={isVisible ? t.hidePassword : t.showPassword}
+          title={isVisible ? t.hidePassword : t.showPassword}
         >
           {isVisible ? <EyeOffIcon /> : <EyeIcon />}
         </button>

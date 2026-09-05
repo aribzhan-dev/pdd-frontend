@@ -13,28 +13,23 @@ import { CountdownTimer } from "@/features/quiz/CountdownTimer";
 import { MediaPanel } from "@/features/quiz/MediaPanel";
 import { QuestionNav } from "@/features/quiz/QuestionNav";
 import { useQuizSession } from "@/features/quiz/useQuizSession";
-import { UI } from "@/i18n/strings";
-import type { Language } from "@/types/api";
+import { useLanguage } from "@/i18n/LanguageContext";
 
-interface QuizPageProps {
-  language: Language;
-  onLanguageChange: (language: Language) => void;
-}
-
-export function QuizPage({ language, onLanguageChange }: QuizPageProps) {
+export function QuizPage() {
+  const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
   const quiz = useQuizSession();
   const [isFinishing, setIsFinishing] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
-  if (quiz.isLoading) return <div className="state">{UI.loading}</div>;
+  if (quiz.isLoading) return <div className="state">{t.loading}</div>;
 
   if (!quiz.session) {
     return (
       <div className="state">
         <p>{quiz.error ?? "Нет активного теста"}</p>
         <button className="btn btn--ghost" onClick={() => navigate("/")}>
-          {UI.toTopics}
+          {t.toTopics}
         </button>
       </div>
     );
@@ -43,7 +38,7 @@ export function QuizPage({ language, onLanguageChange }: QuizPageProps) {
   const { session, position } = quiz;
   const question = session.questions[position];
   const item = session.items[position];
-  if (!question || !item) return <div className="state">{UI.error}</div>;
+  if (!question || !item) return <div className="state">{t.error}</div>;
 
   const isAnswered = item.is_answered;
   const isLast = position === session.total_questions - 1;
@@ -56,7 +51,7 @@ export function QuizPage({ language, onLanguageChange }: QuizPageProps) {
   async function submit(): Promise<void> {
     setIsFinishing(true);
     try {
-      await quizApi.finish(session.id);
+      await quizApi.finish(session.id, language);
       navigate(`/result/${session.id}`);
     } finally {
       setIsFinishing(false);
@@ -79,9 +74,9 @@ export function QuizPage({ language, onLanguageChange }: QuizPageProps) {
     <div className="quiz">
       <ConfirmDialog
         isOpen={isConfirmOpen}
-        title={UI.confirmFinishTitle}
-        description={UI.confirmFinishText(unanswered)}
-        confirmLabel={UI.finish}
+        title={t.confirmFinishTitle}
+        description={t.confirmFinishText(unanswered)}
+        confirmLabel={t.finish}
         isBusy={isFinishing}
         onConfirm={() => {
           setIsConfirmOpen(false);
@@ -91,16 +86,16 @@ export function QuizPage({ language, onLanguageChange }: QuizPageProps) {
       />
 
       <header className="quiz__bar">
-        <LanguageSwitch value={language} onChange={onLanguageChange} />
+        <LanguageSwitch value={language} onChange={setLanguage} />
         {!isComplete && (
           <button
             type="button"
             className="btn btn--link"
             onClick={handleFinish}
             disabled={!session.can_finish || isFinishing}
-            title={session.can_finish ? UI.finishHint : undefined}
+            title={session.can_finish ? t.finishHint : undefined}
           >
-            {isFinishing ? UI.finishing : UI.finish}
+            {isFinishing ? t.finishing : t.finish}
           </button>
         )}
       </header>
@@ -122,11 +117,11 @@ export function QuizPage({ language, onLanguageChange }: QuizPageProps) {
       />
 
       {quiz.wasResumed && (
-        <p className="notice notice--info quiz__resumed">{UI.resumeNotice}</p>
+        <p className="notice notice--info quiz__resumed">{t.resumeNotice}</p>
       )}
 
       <p className="quiz__counter">
-        {UI.question} {position + 1}/{session.total_questions}
+        {t.question} {position + 1}/{session.total_questions}
       </p>
 
       <h1 className="quiz__question">{question.text}</h1>
@@ -154,14 +149,14 @@ export function QuizPage({ language, onLanguageChange }: QuizPageProps) {
           {/* The exam says nothing until it is handed in — only that the
               answer was recorded. */}
           {isAnswered && !session.reveals_answers && (
-            <div className="verdict verdict--noted">{UI.answerRecorded}</div>
+            <div className="verdict verdict--noted">{t.answerRecorded}</div>
           )}
 
           {isAnswered && session.reveals_answers && (
             <div
               className={`verdict ${item.is_correct ? "verdict--ok" : "verdict--no"}`}
             >
-              {item.is_correct ? UI.correct : UI.wrong}
+              {item.is_correct ? t.correct : t.wrong}
             </div>
           )}
 
@@ -169,7 +164,7 @@ export function QuizPage({ language, onLanguageChange }: QuizPageProps) {
             session.reveals_answers &&
             (quiz.feedback?.explanation ?? question.explanation) && (
               <div className="explanation">
-                <p className="explanation__label">{UI.explanation}</p>
+                <p className="explanation__label">{t.explanation}</p>
                 <p className="explanation__text">
                   {quiz.feedback?.explanation ?? question.explanation}
                 </p>
@@ -180,7 +175,7 @@ export function QuizPage({ language, onLanguageChange }: QuizPageProps) {
 
           <div className="quiz__actions">
             <span className="muted">
-              {UI.answeredOf(session.answered_count, session.total_questions)}
+              {t.answeredOf(session.answered_count, session.total_questions)}
             </span>
             {isComplete ? (
               <button
@@ -188,18 +183,18 @@ export function QuizPage({ language, onLanguageChange }: QuizPageProps) {
                 onClick={handleFinish}
                 disabled={isFinishing}
               >
-                {isFinishing ? UI.finishing : UI.finish}
+                {isFinishing ? t.finishing : t.finish}
               </button>
             ) : (
               isAnswered && (
                 <button className="btn btn--primary" onClick={quiz.goNext}>
-                  {UI.next}
+                  {t.next}
                 </button>
               )
             )}
           </div>
 
-          {!isComplete && <p className="muted">{UI.finishHint}</p>}
+          {!isComplete && <p className="muted">{t.finishHint}</p>}
         </div>
       </div>
     </div>

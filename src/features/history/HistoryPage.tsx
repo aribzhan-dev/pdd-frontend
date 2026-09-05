@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 
 import { ApiError } from "@/api/client";
 import { quizApi } from "@/api/quiz";
-import { UI } from "@/i18n/strings";
+import { useStrings } from "@/i18n/LanguageContext";
 import { formatDate, formatDuration } from "@/lib/format";
 import type { ResultBrief } from "@/types/api";
 
 export function HistoryPage() {
+  const t = useStrings();
   const [results, setResults] = useState<ResultBrief[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,7 +21,7 @@ export function HistoryPage() {
         if (!cancelled) setResults(page.items);
       } catch (cause) {
         if (!cancelled) {
-          setError(cause instanceof ApiError ? cause.message : UI.error);
+          setError(cause instanceof ApiError ? cause.message : t.error);
         }
       }
     }
@@ -31,21 +32,21 @@ export function HistoryPage() {
   }, []);
 
   if (error) return <div className="state">{error}</div>;
-  if (!results) return <div className="state">{UI.loading}</div>;
+  if (!results) return <div className="state">{t.loading}</div>;
   if (results.length === 0) {
-    return <div className="state">{UI.emptyHistory}</div>;
+    return <div className="state">{t.emptyHistory}</div>;
   }
 
   return (
     <div className="page stack">
-      <h1 className="section-title">{UI.history}</h1>
+      <h1 className="section-title">{t.history}</h1>
       <div className="table-wrap">
         <table className="table">
           <thead>
             <tr>
               <th>Тест</th>
               <th>Результат</th>
-              <th>{UI.time}</th>
+              <th>{t.time}</th>
               <th>Дата</th>
               <th>Статус</th>
             </tr>
@@ -64,7 +65,7 @@ export function HistoryPage() {
                   <span
                     className={`pill ${result.is_passed ? "pill--success" : "pill--danger"}`}
                   >
-                    {result.is_passed ? UI.passed : UI.failed}
+                    {result.is_passed ? t.passed : t.failed}
                   </span>
                 </td>
               </tr>

@@ -6,7 +6,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { UI } from "@/i18n/strings";
+import { useStrings } from "@/i18n/LanguageContext";
 
 const TICK_MS = 1000;
 
@@ -24,6 +24,7 @@ interface CountdownTimerProps {
 }
 
 export function CountdownTimer({ secondsLeft, onExpire }: CountdownTimerProps) {
+  const t = useStrings();
   const [remaining, setRemaining] = useState(secondsLeft);
   // Keep the latest callback without restarting the interval on every render.
   const onExpireRef = useRef(onExpire);
@@ -51,7 +52,7 @@ export function CountdownTimer({ secondsLeft, onExpire }: CountdownTimerProps) {
 
   return (
     <span className={`timer ${isUrgent ? "timer--urgent" : ""}`}>
-      {remaining === 0 ? UI.timeIsUp : `${UI.timeLeft} ${formatClock(remaining)}`}
+      {remaining === 0 ? t.timeIsUp : `${t.timeLeft} ${formatClock(remaining)}`}
     </span>
   );
 }

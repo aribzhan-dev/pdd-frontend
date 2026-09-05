@@ -8,7 +8,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { UI } from "@/i18n/strings";
+import { useStrings } from "@/i18n/LanguageContext";
 import { formatDate, pluralDays } from "@/lib/format";
 import type { Student } from "@/types/api";
 
@@ -40,6 +40,7 @@ export function ExtendAccessDialog({
   onConfirm,
   onCancel,
 }: ExtendAccessDialogProps) {
+  const t = useStrings();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [days, setDays] = useState<number>(PRESETS[0]);
 
@@ -70,13 +71,13 @@ export function ExtendAccessDialog({
     >
       {student && (
         <div className="dialog__body">
-          <h2 className="dialog__title">{UI.extendAccess}</h2>
+          <h2 className="dialog__title">{t.extendAccess}</h2>
           <p className="dialog__text">
-            {student.full_name} — {UI.accessUntil.toLowerCase()}{" "}
+            {student.full_name} — {t.accessUntil.toLowerCase()}{" "}
             {formatDate(student.access_expires_at)}
             {student.days_left > 0
-              ? `, ${UI.daysLeft.toLowerCase()} ${pluralDays(student.days_left)}`
-              : `, ${UI.accessLapsed}`}
+              ? `, ${t.daysLeft.toLowerCase()} ${pluralDays(student.days_left)}`
+              : `, ${t.accessLapsed}`}
           </p>
 
           <div className="presets">
@@ -93,7 +94,7 @@ export function ExtendAccessDialog({
           </div>
 
           <label className="field">
-            <span className="field__label">{UI.extendDays}</span>
+            <span className="field__label">{t.extendDays}</span>
             <span className="field__control">
               <input
                 type="number"
@@ -108,13 +109,13 @@ export function ExtendAccessDialog({
 
           {isValid && (
             <p className="dialog__text">
-              {UI.newExpiry}: <strong>{projectedExpiry(student, days)}</strong>
+              {t.newExpiry}: <strong>{projectedExpiry(student, days)}</strong>
             </p>
           )}
 
           <div className="dialog__actions">
             <button type="button" className="btn btn--ghost" onClick={onCancel}>
-              {UI.cancel}
+              {t.cancel}
             </button>
             <button
               type="button"
@@ -122,7 +123,7 @@ export function ExtendAccessDialog({
               disabled={!isValid || isBusy}
               onClick={() => onConfirm(days)}
             >
-              {isBusy ? UI.saving : UI.extend}
+              {isBusy ? t.saving : t.extend}
             </button>
           </div>
         </div>

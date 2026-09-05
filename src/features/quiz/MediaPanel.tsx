@@ -7,7 +7,7 @@
 // browser caches it once.
 
 import { SituationVideo } from "@/features/quiz/SituationVideo";
-import { UI } from "@/i18n/strings";
+import { useStrings } from "@/i18n/LanguageContext";
 import type { Media } from "@/types/api";
 
 interface MediaPanelProps {
@@ -21,6 +21,7 @@ export function MediaPanel({
   situationVideo,
   explanationVideoUrl,
 }: MediaPanelProps) {
+  const t = useStrings();
   if (!image && !situationVideo && !explanationVideoUrl) return null;
 
   return (
@@ -30,7 +31,7 @@ export function MediaPanel({
           src={situationVideo.url}
           autoPlay
           muted
-          label={UI.situation}
+          label={t.situation}
         />
       )}
 
@@ -43,7 +44,7 @@ export function MediaPanel({
       )}
 
       {explanationVideoUrl && (
-        <SituationVideo src={explanationVideoUrl} label={UI.explanation} />
+        <SituationVideo src={explanationVideoUrl} label={t.explanation} />
       )}
     </div>
   );

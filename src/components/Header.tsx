@@ -4,10 +4,12 @@
 import { Link, useLocation } from "react-router-dom";
 
 import { useAuth } from "@/features/auth/AuthContext";
-import { UI } from "@/i18n/strings";
+import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { useLanguage } from "@/i18n/LanguageContext";
 import { pluralDays } from "@/lib/format";
 
 export function Header() {
+  const { language, setLanguage, t } = useLanguage();
   const { user, signOut, isStaff } = useAuth();
   const { pathname } = useLocation();
   if (!user) return null;
@@ -18,44 +20,45 @@ export function Header() {
     <header className="header">
       <div className="header__inner">
         <Link to="/" className="header__brand">
-          <span className="header__mark">{UI.appName}</span>
+          <span className="header__mark">{t.appName}</span>
         </Link>
 
         <nav className="header__nav">
           {isStaff ? (
             <>
               <HeaderLink to="/staff/students" current={pathname}>
-                {UI.students}
+                {t.students}
               </HeaderLink>
               {user.role.value === "admin" && (
                 <HeaderLink to="/staff/managers" current={pathname}>
-                  {UI.managers}
+                  {t.managers}
                 </HeaderLink>
               )}
             </>
           ) : (
             <>
               <HeaderLink to="/" current={pathname}>
-                {UI.topics}
+                {t.topics}
               </HeaderLink>
               <HeaderLink to="/history" current={pathname}>
-                {UI.history}
+                {t.history}
               </HeaderLink>
             </>
           )}
         </nav>
 
         <div className="header__account">
+          <LanguageSwitch value={language} onChange={setLanguage} />
           <div className="header__identity">
             <span className="header__name">{user.full_name}</span>
             <span className="header__meta">
               {student
-                ? `${UI.category} ${student.category.label} · ${student.status.label} · ${pluralDays(student.days_left)}`
+                ? `${t.category} ${student.category.label} · ${student.status.label} · ${pluralDays(student.days_left)}`
                 : user.role.label}
             </span>
           </div>
           <button type="button" className="btn btn--ghost" onClick={signOut}>
-            {UI.signOut}
+            {t.signOut}
           </button>
         </div>
       </div>

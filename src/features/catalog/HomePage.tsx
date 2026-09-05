@@ -7,14 +7,11 @@ import { ApiError } from "@/api/client";
 import { contentApi } from "@/api/content";
 import { quizApi, type QuizMode } from "@/api/quiz";
 import { StartTestCard } from "@/features/catalog/StartTestCard";
-import { UI } from "@/i18n/strings";
-import type { Language, Session, TopicBrief } from "@/types/api";
+import { useLanguage } from "@/i18n/LanguageContext";
+import type { Session, TopicBrief } from "@/types/api";
 
-interface HomePageProps {
-  language: Language;
-}
-
-export function HomePage({ language }: HomePageProps) {
+export function HomePage() {
+  const { language, t } = useLanguage();
   const navigate = useNavigate();
   const [topics, setTopics] = useState<TopicBrief[] | null>(null);
   const [active, setActive] = useState<Session | null>(null);
@@ -26,12 +23,12 @@ export function HomePage({ language }: HomePageProps) {
     try {
       const [loadedTopics, activeSession] = await Promise.all([
         contentApi.listTopics(language),
-        quizApi.getActive(),
+        quizApi.getActive(language),
       ]);
       setTopics(loadedTopics);
       setActive(activeSession);
     } catch (cause) {
-      setError(cause instanceof ApiError ? cause.message : UI.error);
+      setError(cause instanceof ApiError ? cause.message : t.error);
     }
   }, [language]);
 
@@ -46,7 +43,7 @@ export function HomePage({ language }: HomePageProps) {
       await quizApi.start(mode, language, topicId);
       navigate("/quiz");
     } catch (cause) {
-      setError(cause instanceof ApiError ? cause.message : UI.error);
+      setError(cause instanceof ApiError ? cause.message : t.error);
     } finally {
       setIsStarting(false);
     }
@@ -57,22 +54,22 @@ export function HomePage({ language }: HomePageProps) {
       <div className="state">
         <p>{error}</p>
         <button className="btn btn--ghost" onClick={() => void load()}>
-          {UI.retryAction}
+          {t.retryAction}
         </button>
       </div>
     );
   }
 
-  if (!topics) return <div className="state">{UI.loading}</div>;
+  if (!topics) return <div className="state">{t.loading}</div>;
 
   return (
     <div className="page stack">
       {active && (
         <div className="resume">
           <div>
-            <p className="resume__title">{UI.resumeNotice}</p>
+            <p className="resume__title">{t.resumeNotice}</p>
             <p className="muted">
-              {active.title} · {UI.answeredOf(active.answered_count, active.total_questions)}
+              {active.title} · {t.answeredOf(active.answered_count, active.total_questions)}
             </p>
           </div>
           <button className="btn btn--primary" onClick={() => navigate("/quiz")}>
@@ -90,11 +87,11 @@ export function HomePage({ language }: HomePageProps) {
         disabled={isStarting}
         onClick={() => void start("mistakes")}
       >
-        <span className="mode__title">{UI.mistakes}</span>
-        <span className="mode__hint">{UI.mistakesHint}</span>
+        <span className="mode__title">{t.mistakes}</span>
+        <span className="mode__hint">{t.mistakesHint}</span>
       </button>
 
-      <h2 className="section-title">{UI.topicsSection}</h2>
+      <h2 className="section-title">{t.topicsSection}</h2>
       <div className="topics">
         {topics.map((topic) => (
           <button
@@ -107,7 +104,7 @@ export function HomePage({ language }: HomePageProps) {
             <span className="topic__body">
               <span className="topic__title">{topic.title}</span>
               <span className="topic__meta">
-                {topic.question_count} {UI.questions}
+                {topic.question_count} {t.questions}
               </span>
             </span>
             {topic.best_percent !== null && (

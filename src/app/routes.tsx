@@ -12,18 +12,13 @@ import { QuizPage } from "@/features/quiz/QuizPage";
 import { ResultPage } from "@/features/quiz/ResultPage";
 import { ManagersPage } from "@/features/staff/ManagersPage";
 import { StudentsPage } from "@/features/staff/StudentsPage";
-import { UI } from "@/i18n/strings";
-import type { Language } from "@/types/api";
+import { useStrings } from "@/i18n/LanguageContext";
 
-interface AppRoutesProps {
-  language: Language;
-  onLanguageChange: (language: Language) => void;
-}
-
-export function AppRoutes({ language, onLanguageChange }: AppRoutesProps) {
+export function AppRoutes() {
+  const t = useStrings();
   const { user, isLoading, isStaff, role } = useAuth();
 
-  if (isLoading) return <div className="state">{UI.loading}</div>;
+  if (isLoading) return <div className="state">{t.loading}</div>;
   if (!user) return <LoginPage />;
 
   return (
@@ -40,16 +35,8 @@ export function AppRoutes({ language, onLanguageChange }: AppRoutesProps) {
           </>
         ) : (
           <>
-            <Route path="/" element={<HomePage language={language} />} />
-            <Route
-              path="/quiz"
-              element={
-                <QuizPage
-                  language={language}
-                  onLanguageChange={onLanguageChange}
-                />
-              }
-            />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/quiz" element={<QuizPage />} />
             <Route path="/result/:sessionId" element={<ResultPage />} />
             <Route path="/history" element={<HistoryPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />

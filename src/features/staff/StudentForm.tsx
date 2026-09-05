@@ -12,7 +12,7 @@ import { staffApi, type StudentPatch, type StudentPayload } from "@/api/staff";
 import { ApiError } from "@/api/client";
 import { PasswordField } from "@/components/PasswordField";
 import { TextField } from "@/components/TextField";
-import { UI } from "@/i18n/strings";
+import { useStrings } from "@/i18n/LanguageContext";
 import type {
   CredentialsIssued,
   LabeledValue,
@@ -42,6 +42,7 @@ export function StudentForm({
   onUpdated,
   onCancel,
 }: StudentFormProps) {
+  const t = useStrings();
   const isEdit = student !== null;
 
   const [form, setForm] = useState({
@@ -72,7 +73,7 @@ export function StudentForm({
         await saveCreate();
       }
     } catch (cause) {
-      setError(cause instanceof ApiError ? cause.message : UI.error);
+      setError(cause instanceof ApiError ? cause.message : t.error);
     } finally {
       setIsSaving(false);
     }
@@ -118,36 +119,36 @@ export function StudentForm({
   return (
     <form className="card stack" onSubmit={handleSubmit}>
       <h2 className="section-title">
-        {isEdit ? UI.editStudent : UI.createStudent}
+        {isEdit ? t.editStudent : t.createStudent}
       </h2>
 
       <div className="form-grid">
         <TextField
-          label={UI.surname}
+          label={t.surname}
           value={form.surname}
           onChange={(value) => update("surname", value)}
           required
         />
         <TextField
-          label={UI.name}
+          label={t.name}
           value={form.name}
           onChange={(value) => update("name", value)}
           required
         />
         <TextField
-          label={UI.iin}
+          label={t.iin}
           value={form.iin}
           onChange={(value) =>
             update("iin", value.replace(/\D/g, "").slice(0, IIN_LENGTH))
           }
-          placeholder={UI.iinPlaceholder}
+          placeholder={t.iinPlaceholder}
           inputMode="numeric"
           maxLength={IIN_LENGTH}
           required={!isEdit}
           readOnly={isEdit}
         />
         <TextField
-          label={UI.phone}
+          label={t.phone}
           value={form.phone_number}
           onChange={(value) => update("phone_number", value)}
           type="tel"
@@ -155,7 +156,7 @@ export function StudentForm({
         />
 
         <label className="field">
-          <span className="field__label">{UI.category}</span>
+          <span className="field__label">{t.category}</span>
           <select
             className="field__input"
             value={form.category}
@@ -171,7 +172,7 @@ export function StudentForm({
 
         {isEdit ? (
           <label className="field">
-            <span className="field__label">{UI.status}</span>
+            <span className="field__label">{t.status}</span>
             <select
               className="field__input"
               value={form.status}
@@ -186,7 +187,7 @@ export function StudentForm({
           </label>
         ) : (
           <TextField
-            label={UI.accessDays}
+            label={t.accessDays}
             value={form.access_days}
             onChange={(value) =>
               update("access_days", value.replace(/\D/g, "").slice(0, 3))
@@ -201,7 +202,7 @@ export function StudentForm({
           onChange={(value) => update("password", value)}
           autoComplete="new-password"
           required={!isEdit}
-          placeholder={isEdit ? UI.passwordUnchanged : "минимум 6 символов"}
+          placeholder={isEdit ? t.passwordUnchanged : "минимум 6 символов"}
         />
       </div>
 
@@ -213,10 +214,10 @@ export function StudentForm({
           className="btn btn--primary"
           disabled={!isComplete || isSaving}
         >
-          {isSaving ? UI.saving : UI.save}
+          {isSaving ? t.saving : t.save}
         </button>
         <button type="button" className="btn btn--ghost" onClick={onCancel}>
-          {UI.cancel}
+          {t.cancel}
         </button>
       </div>
     </form>

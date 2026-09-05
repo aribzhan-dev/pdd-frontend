@@ -6,12 +6,7 @@
 import { useState } from "react";
 
 import type { QuizMode } from "@/api/quiz";
-import { UI } from "@/i18n/strings";
-
-const OPTIONS: { mode: QuizMode; label: string; hint: string }[] = [
-  { mode: "exam", label: UI.exam, hint: UI.examHint },
-  { mode: "training", label: UI.training, hint: UI.trainingHint },
-];
+import { useStrings } from "@/i18n/LanguageContext";
 
 interface StartTestCardProps {
   onStart: (mode: QuizMode) => void;
@@ -19,14 +14,22 @@ interface StartTestCardProps {
 }
 
 export function StartTestCard({ onStart, isStarting }: StartTestCardProps) {
+  const t = useStrings();
   const [mode, setMode] = useState<QuizMode>("exam");
+
+  // Built here rather than at module scope: the labels come from the
+  // dictionary, which only exists once a language has been chosen.
+  const options: { mode: QuizMode; label: string; hint: string }[] = [
+    { mode: "exam", label: t.exam, hint: t.examHint },
+    { mode: "training", label: t.training, hint: t.trainingHint },
+  ];
 
   return (
     <section className="start">
-      <h2 className="start__title">{UI.startNewTest}</h2>
+      <h2 className="start__title">{t.startNewTest}</h2>
 
       <div className="start__options">
-        {OPTIONS.map((option) => (
+        {options.map((option) => (
           <label
             key={option.mode}
             className={`radio ${option.mode === mode ? "is-active" : ""}`}
@@ -52,7 +55,7 @@ export function StartTestCard({ onStart, isStarting }: StartTestCardProps) {
         disabled={isStarting}
         onClick={() => onStart(mode)}
       >
-        {isStarting ? UI.loading : UI.startTest}
+        {isStarting ? t.loading : t.startTest}
       </button>
     </section>
   );

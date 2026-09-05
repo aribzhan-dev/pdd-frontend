@@ -1,8 +1,23 @@
-// Interface text, in Russian. Content (questions, answers) is localised by the
-// backend according to the selected language; these are the chrome strings.
+// Interface text in both languages.
+//
+// Content — questions, answers, explanations — is localised by the backend
+// according to the requested language. These are the chrome strings around it,
+// and they have to switch with the same toggle, otherwise the switcher only
+// half works.
+//
+// Both dictionaries are typed against the Russian one, so a key added to RU
+// without a Kazakh counterpart is a compile error rather than a Russian word
+// appearing on a Kazakh screen.
+
+import type { Language } from "@/types/api";
 
 /** Russian plural for a count: 1 вопрос, 2 вопроса, 5 вопросов. */
-function plural(count: number, one: string, few: string, many: string): string {
+function pluralRu(
+  count: number,
+  one: string,
+  few: string,
+  many: string,
+): string {
   const mod100 = count % 100;
   const mod10 = count % 10;
   if (mod100 >= 11 && mod100 <= 14) return many;
@@ -11,7 +26,7 @@ function plural(count: number, one: string, few: string, many: string): string {
   return many;
 }
 
-export const UI = {
+const RU = {
   appName: "ПДД",
   tagline: "Онлайн подготовка к экзамену",
 
@@ -49,6 +64,7 @@ export const UI = {
   questions: "вопросов",
   start: "Начать",
   best: "Лучший результат",
+  resume: "Продолжить",
 
   // Quiz
   question: "Вопрос",
@@ -60,14 +76,23 @@ export const UI = {
   answerRecorded: "Ответ записан",
   explanation: "Пояснение",
   situation: "Ситуация",
-  answeredOf: (answered: number, total: number) => `Отвечено ${answered} из ${total}`,
-  finishHint: "Завершить можно в любой момент — вопросы без ответа засчитываются как неверные",
+  replay: "Повторить",
+  answeredOf: (answered: number, total: number) =>
+    `Отвечено ${answered} из ${total}`,
+  finishHint:
+    "Завершить можно в любой момент — вопросы без ответа засчитываются как неверные",
   timeLeft: "Осталось",
   timeIsUp: "Время вышло",
   confirmFinishTitle: "Завершить тест?",
   confirmFinishText: (unanswered: number) =>
-    `${unanswered} ${plural(unanswered, "вопрос остался", "вопроса остались", "вопросов остались")} без ответа и будут засчитаны как неверные.`,
+    `${unanswered} ${pluralRu(
+      unanswered,
+      "вопрос остался",
+      "вопроса остались",
+      "вопросов остались",
+    )} без ответа и будут засчитаны как неверные.`,
   resumeNotice: "Вы вернулись к незаконченному тесту",
+  noActiveTest: "Нет активного теста",
 
   // Result
   passed: "Тест сдан",
@@ -120,9 +145,147 @@ export const UI = {
   nothingFound: "Ничего не найдено",
   lastLogin: "Последний вход",
   never: "Не входил",
+  days: (count: number) =>
+    `${count} ${pluralRu(count, "день", "дня", "дней")}`,
 
   // Generic
   loading: "Загрузка…",
   error: "Что-то пошло не так",
   retryAction: "Повторить",
-} as const;
+};
+
+/** Every dictionary must answer for the same keys, with the same shapes. */
+type Strings = typeof RU;
+
+// Kazakh has no three-form plural agreement: a number is simply followed by
+// the singular noun, so no helper is needed here.
+const KZ: Strings = {
+  appName: "ЖҚЕ",
+  tagline: "Емтиханға онлайн дайындық",
+
+  // Auth
+  signIn: "Кіру",
+  signingIn: "Кіру…",
+  signOut: "Шығу",
+  iin: "ЖСН",
+  password: "Құпия сөз",
+  iinPlaceholder: "12 сан",
+  showPassword: "Құпия сөзді көрсету",
+  hidePassword: "Құпия сөзді жасыру",
+  loginHint: "Логин мен құпия сөзді оқу орталығы береді",
+  contactUs: "Бізбен байланысу",
+
+  // Navigation
+  topics: "Тақырыптар",
+  history: "Менің нәтижелерім",
+  students: "Студенттер",
+  managers: "Менеджерлер",
+  back: "Артқа",
+
+  // Catalogue
+  modes: "Режимдер",
+  startNewTest: "Жаңа тестілеуді бастау",
+  startTest: "Тестілеуді бастау",
+  exam: "40 сұрақ (АХҚО сияқты)",
+  examHint: "Нақты емтихандағыдай — 40 сұраққа 40 минут",
+  training: "Оқу режимінде",
+  trainingHint: "Уақыт шектеусіз 40 сұрақ",
+  mistakes: "Қателермен жұмыс",
+  mistakesHint: "Сіз қателескен сұрақтар",
+  mistakesEmpty: "Әзірге қате жоқ",
+  topicsSection: "Тақырыптар",
+  questions: "сұрақ",
+  start: "Бастау",
+  best: "Үздік нәтиже",
+  resume: "Жалғастыру",
+
+  // Quiz
+  question: "Сұрақ",
+  finish: "Аяқтау",
+  finishing: "Аяқталуда…",
+  next: "Келесі",
+  correct: "Дұрыс",
+  wrong: "Қате",
+  answerRecorded: "Жауап жазылды",
+  explanation: "Түсіндірме",
+  situation: "Жағдай",
+  replay: "Қайталау",
+  answeredOf: (answered: number, total: number) =>
+    `${total} сұрақтың ${answered} жауап берілді`,
+  finishHint:
+    "Кез келген уақытта аяқтауға болады — жауапсыз сұрақтар қате деп есептеледі",
+  timeLeft: "Қалды",
+  timeIsUp: "Уақыт бітті",
+  confirmFinishTitle: "Тестті аяқтайсыз ба?",
+  confirmFinishText: (unanswered: number) =>
+    `${unanswered} сұрақ жауапсыз қалды және қате деп есептеледі.`,
+  resumeNotice: "Сіз аяқталмаған тестке оралдыңыз",
+  noActiveTest: "Белсенді тест жоқ",
+
+  // Result
+  passed: "Тест тапсырылды",
+  failed: "Тест тапсырылмады",
+  correctAnswers: "Дұрыс жауаптар",
+  time: "Уақыт",
+  retry: "Қайта өту",
+  toTopics: "Тақырыптарға",
+  review: "Тест талдауы",
+  mistakesList: "Қателерді талдау",
+  showAll: "Барлық сұрақтар",
+  showMistakes: "Тек қателер",
+  noMistakes: "Қате жоқ",
+  yourAnswer: "Сіздің жауабыңыз",
+  correctAnswer: "Дұрыс жауап",
+  noAnswer: "Жауапсыз",
+  emptyHistory: "Сіз әлі тест тапсырған жоқсыз",
+
+  // Staff
+  createStudent: "Студент құру",
+  createManager: "Менеджер құру",
+  name: "Аты",
+  surname: "Тегі",
+  phone: "Телефон",
+  category: "Санат",
+  status: "Мәртебе",
+  accessDays: "Қолжетімділік мерзімі (күн)",
+  accessUntil: "Қолжетімділік мерзімі",
+  daysLeft: "Қалды",
+  note: "Ескертпе",
+  search: "Аты, ЖСН немесе телефон бойынша іздеу",
+  save: "Сақтау",
+  saving: "Сақталуда…",
+  cancel: "Болдырмау",
+  edit: "Өзгерту",
+  editStudent: "Студентті өзгерту",
+  open: "Ашу",
+  studentDetails: "Студент деректері",
+  accessFrom: "Қолжетімділік басталды",
+  createdAt: "Құрылды",
+  passwordUnchanged: "Өзгертпеу үшін бос қалдырыңыз",
+  remove: "Жою",
+  confirmRemove: "Қайтарымсыз жою керек пе?",
+  credentialsIssued: "Аккаунт құрылды — деректерді студентке беріңіз",
+  extendDays: "Неше күнге ұзарту керек",
+  extend: "Ұзарту",
+  extendAccess: "Қолжетімділікті ұзарту",
+  newExpiry: "Жаңа аяқталу күні",
+  accessLapsed: "мерзімі бітті",
+  nothingFound: "Ештеңе табылмады",
+  lastLogin: "Соңғы кіру",
+  never: "Кірмеген",
+  days: (count: number) => `${count} күн`,
+
+  // Generic
+  loading: "Жүктелуде…",
+  error: "Бірдеңе дұрыс болмады",
+  retryAction: "Қайталау",
+};
+
+const DICTIONARIES: Record<Language, Strings> = { ru: RU, kz: KZ };
+
+/** The dictionary for a language. */
+export function strings(language: Language): Strings {
+  return DICTIONARIES[language] ?? RU;
+}
+
+export type { Strings };

@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { ApiError } from "@/api/client";
 import { quizApi, type QuizMode } from "@/api/quiz";
-import { UI } from "@/i18n/strings";
+import { useLanguage } from "@/i18n/LanguageContext";
 import type {
   AnswerResult,
   ItemState,
@@ -83,11 +83,10 @@ function revealAnswers(
   );
 }
 
-function messageOf(cause: unknown): string {
-  return cause instanceof ApiError ? cause.message : UI.error;
-}
+
 
 export function useQuizSession(): QuizState {
+  const { language, t } = useLanguage();
   const [session, setSession] = useState<Session | null>(null);
   const [position, setPosition] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
@@ -95,6 +94,11 @@ export function useQuizSession(): QuizState {
   const [wasResumed, setWasResumed] = useState(false);
   const [feedback, setFeedback] = useState<AnswerResult | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const messageOf = useCallback(
+    (cause: unknown) => (cause instanceof ApiError ? cause.message : t.error),
+    [t],
+  );
 
   const adopt = useCallback((next: Session, resumed: boolean) => {
     setSession(next);
@@ -107,33 +111,34 @@ export function useQuizSession(): QuizState {
     setIsLoading(true);
     setError(null);
     try {
-      const active = await quizApi.getActive();
+      const active = await quizApi.getActive(language);
       if (active) adopt(active, active.answered_count > 0);
     } catch (cause) {
       setError(messageOf(cause));
     } finally {
       setIsLoading(false);
     }
-  }, [adopt]);
+  }, [adopt, language, messageOf]);
 
-  // Restore on mount: this is the page-reload path.
+  // Restore on mount, and again whenever the language changes: the session
+  // itself does not change, only the language it is rendered in.
   useEffect(() => {
     void restore();
   }, [restore]);
 
   const startSession = useCallback(
-    async (mode: QuizMode, language: Language, topicId?: number) => {
+    async (mode: QuizMode, startLanguage: Language, topicId?: number) => {
       setIsLoading(true);
       setError(null);
       try {
-        adopt(await quizApi.start(mode, language, topicId), false);
+        adopt(await quizApi.start(mode, startLanguage, topicId), false);
       } catch (cause) {
         setError(messageOf(cause));
       } finally {
         setIsLoading(false);
       }
     },
-    [adopt],
+    [adopt, messageOf],
   );
 
   const choose = useCallback(
@@ -145,7 +150,12 @@ export function useQuizSession(): QuizState {
       setIsSubmitting(true);
       setError(null);
       try {
-        const result = await quizApi.answer(session.id, question.id, answerId);
+        const result = await quizApi.answer(
+          session.id,
+          question.id,
+          answerId,
+          language,
+        );
         setFeedback(result);
         setSession((current) =>
           current === null
@@ -171,7 +181,7 @@ export function useQuizSession(): QuizState {
         setIsSubmitting(false);
       }
     },
-    [session, position],
+    [session, position, language, messageOf],
   );
 
   const goTo = useCallback(

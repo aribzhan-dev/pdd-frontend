@@ -7,7 +7,8 @@ import { ApiError } from "@/api/client";
 import { PasswordField } from "@/components/PasswordField";
 import { TextField } from "@/components/TextField";
 import { useAuth } from "@/features/auth/AuthContext";
-import { UI } from "@/i18n/strings";
+import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { useLanguage } from "@/i18n/LanguageContext";
 
 const IIN_LENGTH = 12;
 //: Every issued password is at least this long (enforced by the backend), so
@@ -24,6 +25,7 @@ const CONTACT_URL = `https://wa.me/${CONTACT_PHONE}?text=${encodeURIComponent(
 )}`;
 
 export function LoginPage() {
+  const { language, setLanguage, t } = useLanguage();
   const { signIn } = useAuth();
   const [iin, setIin] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +39,7 @@ export function LoginPage() {
     try {
       await signIn(iin, password);
     } catch (cause) {
-      setError(cause instanceof ApiError ? cause.message : UI.error);
+      setError(cause instanceof ApiError ? cause.message : t.error);
     } finally {
       setIsSubmitting(false);
     }
@@ -51,16 +53,20 @@ export function LoginPage() {
   return (
     <div className="login">
       <form className="login__card" onSubmit={handleSubmit}>
+        <div className="login__lang">
+          <LanguageSwitch value={language} onChange={setLanguage} />
+        </div>
+
         <div className="login__brand">
-          <span className="login__mark">{UI.appName}</span>
-          <p className="login__tagline">{UI.tagline}</p>
+          <span className="login__mark">{t.appName}</span>
+          <p className="login__tagline">{t.tagline}</p>
         </div>
 
         <TextField
-          label={UI.iin}
+          label={t.iin}
           value={iin}
           onChange={handleIinChange}
-          placeholder={UI.iinPlaceholder}
+          placeholder={t.iinPlaceholder}
           autoComplete="username"
           inputMode="numeric"
           maxLength={IIN_LENGTH}
@@ -80,10 +86,10 @@ export function LoginPage() {
             password.length < MIN_PASSWORD_LENGTH
           }
         >
-          {isSubmitting ? UI.signingIn : UI.signIn}
+          {isSubmitting ? t.signingIn : t.signIn}
         </button>
 
-        <p className="login__hint">{UI.loginHint}</p>
+        <p className="login__hint">{t.loginHint}</p>
 
         <a
           className="login__contact"
@@ -91,7 +97,7 @@ export function LoginPage() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          {UI.contactUs}
+          {t.contactUs}
         </a>
       </form>
     </div>

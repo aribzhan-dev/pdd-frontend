@@ -15,11 +15,12 @@ import { StudentDetailDialog } from "@/features/staff/StudentDetailDialog";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { EditIcon, ExtendIcon, TrashIcon, ViewIcon } from "@/components/Icons";
 import { ExtendAccessDialog } from "@/features/staff/ExtendAccessDialog";
-import { UI } from "@/i18n/strings";
+import { useStrings } from "@/i18n/LanguageContext";
 import { formatDate, pluralDays } from "@/lib/format";
 import type { CredentialsIssued, LabeledValue, Student } from "@/types/api";
 
 export function StudentsPage() {
+  const t = useStrings();
   const { role } = useAuth();
   const isAdmin = role === "admin";
 
@@ -42,7 +43,7 @@ export function StudentsPage() {
       const page = await staffApi.listStudents(search);
       setStudents(page.items);
     } catch (cause) {
-      setError(cause instanceof ApiError ? cause.message : UI.error);
+      setError(cause instanceof ApiError ? cause.message : t.error);
     }
   }, [search]);
 
@@ -82,7 +83,7 @@ export function StudentsPage() {
       setPendingExtension(null);
       await load();
     } catch (cause) {
-      setError(cause instanceof ApiError ? cause.message : UI.error);
+      setError(cause instanceof ApiError ? cause.message : t.error);
     } finally {
       setIsExtending(false);
     }
@@ -94,7 +95,7 @@ export function StudentsPage() {
       await staffApi.deleteStudent(student.id);
       await load();
     } catch (cause) {
-      setError(cause instanceof ApiError ? cause.message : UI.error);
+      setError(cause instanceof ApiError ? cause.message : t.error);
     }
   }
 
@@ -102,9 +103,9 @@ export function StudentsPage() {
     <div className="page stack">
       <ConfirmDialog
         isOpen={pendingRemoval !== null}
-        title={UI.confirmRemove}
+        title={t.confirmRemove}
         description={pendingRemoval?.full_name}
-        confirmLabel={UI.remove}
+        confirmLabel={t.remove}
         isDestructive
         onConfirm={() => {
           if (pendingRemoval) void remove(pendingRemoval);
@@ -137,22 +138,22 @@ export function StudentsPage() {
       />
 
       <div className="spread">
-        <h1 className="section-title">{UI.students}</h1>
+        <h1 className="section-title">{t.students}</h1>
         <button className="btn btn--primary" onClick={openCreate}>
-          {isCreating ? UI.cancel : UI.createStudent}
+          {isCreating ? t.cancel : t.createStudent}
         </button>
       </div>
 
       {issued && (
         <div className="notice notice--info">
-          <strong>{UI.credentialsIssued}</strong>
+          <strong>{t.credentialsIssued}</strong>
           <div className="credentials">
             <span>{issued.full_name}</span>
             <span>
-              {UI.iin}: <code>{issued.iin}</code>
+              {t.iin}: <code>{issued.iin}</code>
             </span>
             <span>
-              {UI.password}: <code>{issued.password}</code>
+              {t.password}: <code>{issued.password}</code>
             </span>
           </div>
         </div>
@@ -185,14 +186,14 @@ export function StudentsPage() {
 
       <input
         className="field__input"
-        placeholder={UI.search}
+        placeholder={t.search}
         value={search}
         onChange={(event) => setSearch(event.target.value)}
       />
 
       {error && <div className="notice notice--error">{error}</div>}
-      {!students && <div className="state">{UI.loading}</div>}
-      {students?.length === 0 && <p className="muted">{UI.nothingFound}</p>}
+      {!students && <div className="state">{t.loading}</div>}
+      {students?.length === 0 && <p className="muted">{t.nothingFound}</p>}
 
       {students && students.length > 0 && (
         <div className="table-wrap">
@@ -200,12 +201,12 @@ export function StudentsPage() {
             <thead>
               <tr>
                 <th>Студент</th>
-                <th>{UI.iin}</th>
-                <th>{UI.phone}</th>
-                <th>{UI.category}</th>
-                <th>{UI.status}</th>
-                <th>{UI.accessUntil}</th>
-                <th>{UI.lastLogin}</th>
+                <th>{t.iin}</th>
+                <th>{t.phone}</th>
+                <th>{t.category}</th>
+                <th>{t.status}</th>
+                <th>{t.accessUntil}</th>
+                <th>{t.lastLogin}</th>
                 <th />
               </tr>
             </thead>
@@ -241,21 +242,21 @@ export function StudentsPage() {
                     {formatDate(student.access_expires_at)}
                     <br />
                     <span className="muted">
-                      {UI.daysLeft} {pluralDays(student.days_left)}
+                      {t.daysLeft} {pluralDays(student.days_left)}
                     </span>
                   </td>
                   <td>
                     {student.last_login_at
                       ? formatDate(student.last_login_at)
-                      : UI.never}
+                      : t.never}
                   </td>
                   <td>
                     <div className="row-actions">
                       <button
                         type="button"
                         className="icon-btn"
-                        title={UI.open}
-                        aria-label={UI.open}
+                        title={t.open}
+                        aria-label={t.open}
                         onClick={() => setViewing(student)}
                       >
                         <ViewIcon />
@@ -263,8 +264,8 @@ export function StudentsPage() {
                       <button
                         type="button"
                         className="icon-btn"
-                        title={UI.edit}
-                        aria-label={UI.edit}
+                        title={t.edit}
+                        aria-label={t.edit}
                         onClick={() => openEdit(student)}
                       >
                         <EditIcon />
@@ -272,8 +273,8 @@ export function StudentsPage() {
                       <button
                         type="button"
                         className="icon-btn"
-                        title={UI.extend}
-                        aria-label={UI.extend}
+                        title={t.extend}
+                        aria-label={t.extend}
                         onClick={() => setPendingExtension(student)}
                       >
                         <ExtendIcon />
@@ -282,8 +283,8 @@ export function StudentsPage() {
                         <button
                           type="button"
                           className="icon-btn icon-btn--danger"
-                          title={UI.remove}
-                          aria-label={UI.remove}
+                          title={t.remove}
+                          aria-label={t.remove}
                           onClick={() => setPendingRemoval(student)}
                         >
                           <TrashIcon />

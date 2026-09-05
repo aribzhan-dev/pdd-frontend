@@ -8,7 +8,7 @@
 
 import { useEffect, useRef } from "react";
 
-import { UI } from "@/i18n/strings";
+import { useStrings } from "@/i18n/LanguageContext";
 import { formatDate, pluralDays } from "@/lib/format";
 import type { Student } from "@/types/api";
 
@@ -29,6 +29,7 @@ export function StudentDetailDialog({
   onDelete,
   onClose,
 }: StudentDetailDialogProps) {
+  const t = useStrings();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -60,18 +61,18 @@ export function StudentDetailDialog({
           <h2 className="dialog__title">{student.full_name}</h2>
 
           <dl className="details">
-            <dt>{UI.iin}</dt>
+            <dt>{t.iin}</dt>
             <dd>
               <code>{student.iin}</code>
             </dd>
 
-            <dt>{UI.phone}</dt>
+            <dt>{t.phone}</dt>
             <dd>{student.phone_number ?? "—"}</dd>
 
-            <dt>{UI.category}</dt>
+            <dt>{t.category}</dt>
             <dd>{student.category.label}</dd>
 
-            <dt>{UI.status}</dt>
+            <dt>{t.status}</dt>
             <dd>
               <span
                 className={`pill ${isActive ? "pill--success" : "pill--danger"}`}
@@ -80,33 +81,33 @@ export function StudentDetailDialog({
               </span>
             </dd>
 
-            <dt>{UI.accessFrom}</dt>
+            <dt>{t.accessFrom}</dt>
             <dd>{formatDate(student.access_starts_at)}</dd>
 
-            <dt>{UI.accessUntil}</dt>
+            <dt>{t.accessUntil}</dt>
             <dd>
               {formatDate(student.access_expires_at)}
               {student.days_left > 0 && (
                 <span className="muted">
                   {" "}
-                  ({UI.daysLeft.toLowerCase()} {pluralDays(student.days_left)})
+                  ({t.daysLeft.toLowerCase()} {pluralDays(student.days_left)})
                 </span>
               )}
             </dd>
 
-            <dt>{UI.lastLogin}</dt>
+            <dt>{t.lastLogin}</dt>
             <dd>
               {student.last_login_at
                 ? formatDate(student.last_login_at)
-                : UI.never}
+                : t.never}
             </dd>
 
-            <dt>{UI.createdAt}</dt>
+            <dt>{t.createdAt}</dt>
             <dd>{formatDate(student.created_at)}</dd>
 
             {student.note && (
               <>
-                <dt>{UI.note}</dt>
+                <dt>{t.note}</dt>
                 <dd>{student.note}</dd>
               </>
             )}
@@ -119,7 +120,7 @@ export function StudentDetailDialog({
                 className="btn btn--ghost"
                 onClick={() => onDelete(student)}
               >
-                {UI.remove}
+                {t.remove}
               </button>
             )}
             <button
@@ -127,14 +128,14 @@ export function StudentDetailDialog({
               className="btn btn--ghost"
               onClick={() => onExtend(student)}
             >
-              {UI.extend}
+              {t.extend}
             </button>
             <button
               type="button"
               className="btn btn--primary"
               onClick={() => onEdit(student)}
             >
-              {UI.edit}
+              {t.edit}
             </button>
           </div>
         </div>

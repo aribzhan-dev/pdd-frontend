@@ -6,7 +6,7 @@
 
 import { useEffect, useRef } from "react";
 
-import { UI } from "@/i18n/strings";
+import { useStrings } from "@/i18n/LanguageContext";
 
 interface ConfirmDialogProps {
   isOpen: boolean;
@@ -26,12 +26,13 @@ export function ConfirmDialog({
   title,
   description,
   confirmLabel,
-  cancelLabel = UI.cancel,
+  cancelLabel,
   isDestructive = false,
   isBusy = false,
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
+  const t = useStrings();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
@@ -63,7 +64,7 @@ export function ConfirmDialog({
         {description && <p className="dialog__text">{description}</p>}
         <div className="dialog__actions">
           <button type="button" className="btn btn--ghost" onClick={onCancel}>
-            {cancelLabel}
+            {cancelLabel ?? t.cancel}
           </button>
           <button
             type="button"

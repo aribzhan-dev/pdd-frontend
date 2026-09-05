@@ -8,7 +8,7 @@ import { staffApi } from "@/api/staff";
 import { PasswordField } from "@/components/PasswordField";
 import { TextField } from "@/components/TextField";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
-import { UI } from "@/i18n/strings";
+import { useStrings } from "@/i18n/LanguageContext";
 import { formatDate } from "@/lib/format";
 import type { UserBrief } from "@/types/api";
 
@@ -23,6 +23,7 @@ const EMPTY_FORM = {
 };
 
 export function ManagersPage() {
+  const t = useStrings();
   const [managers, setManagers] = useState<UserBrief[] | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -38,7 +39,7 @@ export function ManagersPage() {
       const page = await staffApi.listManagers("");
       setManagers(page.items);
     } catch (cause) {
-      setError(cause instanceof ApiError ? cause.message : UI.error);
+      setError(cause instanceof ApiError ? cause.message : t.error);
     }
   }, []);
 
@@ -66,7 +67,7 @@ export function ManagersPage() {
       setIsFormOpen(false);
       await load();
     } catch (cause) {
-      setError(cause instanceof ApiError ? cause.message : UI.error);
+      setError(cause instanceof ApiError ? cause.message : t.error);
     } finally {
       setIsSaving(false);
     }
@@ -78,7 +79,7 @@ export function ManagersPage() {
       await staffApi.deleteManager(manager.id);
       await load();
     } catch (cause) {
-      setError(cause instanceof ApiError ? cause.message : UI.error);
+      setError(cause instanceof ApiError ? cause.message : t.error);
     }
   }
 
@@ -92,9 +93,9 @@ export function ManagersPage() {
     <div className="page stack">
       <ConfirmDialog
         isOpen={pendingRemoval !== null}
-        title={UI.confirmRemove}
+        title={t.confirmRemove}
         description={pendingRemoval?.full_name}
-        confirmLabel={UI.remove}
+        confirmLabel={t.remove}
         isDestructive
         onConfirm={() => {
           if (pendingRemoval) void remove(pendingRemoval);
@@ -103,12 +104,12 @@ export function ManagersPage() {
       />
 
       <div className="spread">
-        <h1 className="section-title">{UI.managers}</h1>
+        <h1 className="section-title">{t.managers}</h1>
         <button
           className="btn btn--primary"
           onClick={() => setIsFormOpen((open) => !open)}
         >
-          {isFormOpen ? UI.cancel : UI.createManager}
+          {isFormOpen ? t.cancel : t.createManager}
         </button>
       </div>
 
@@ -116,30 +117,30 @@ export function ManagersPage() {
         <form className="card stack" onSubmit={handleSubmit}>
           <div className="form-grid">
             <TextField
-              label={UI.surname}
+              label={t.surname}
               value={form.surname}
               onChange={(value) => update("surname", value)}
               required
             />
             <TextField
-              label={UI.name}
+              label={t.name}
               value={form.name}
               onChange={(value) => update("name", value)}
               required
             />
             <TextField
-              label={UI.iin}
+              label={t.iin}
               value={form.iin}
               onChange={(value) =>
                 update("iin", value.replace(/\D/g, "").slice(0, IIN_LENGTH))
               }
-              placeholder={UI.iinPlaceholder}
+              placeholder={t.iinPlaceholder}
               inputMode="numeric"
               maxLength={IIN_LENGTH}
               required
             />
             <TextField
-              label={UI.phone}
+              label={t.phone}
               value={form.phone_number}
               onChange={(value) => update("phone_number", value)}
               type="tel"
@@ -156,15 +157,15 @@ export function ManagersPage() {
               className="btn btn--primary"
               disabled={!isComplete || isSaving}
             >
-              {isSaving ? UI.saving : UI.save}
+              {isSaving ? t.saving : t.save}
             </button>
           </div>
         </form>
       )}
 
       {error && <div className="notice notice--error">{error}</div>}
-      {!managers && <div className="state">{UI.loading}</div>}
-      {managers?.length === 0 && <p className="muted">{UI.nothingFound}</p>}
+      {!managers && <div className="state">{t.loading}</div>}
+      {managers?.length === 0 && <p className="muted">{t.nothingFound}</p>}
 
       {managers && managers.length > 0 && (
         <div className="table-wrap">
@@ -172,8 +173,8 @@ export function ManagersPage() {
             <thead>
               <tr>
                 <th>Менеджер</th>
-                <th>{UI.iin}</th>
-                <th>{UI.phone}</th>
+                <th>{t.iin}</th>
+                <th>{t.phone}</th>
                 <th>Создан</th>
                 <th />
               </tr>
@@ -192,7 +193,7 @@ export function ManagersPage() {
                       className="btn btn--link"
                       onClick={() => setPendingRemoval(manager)}
                     >
-                      {UI.remove}
+                      {t.remove}
                     </button>
                   </td>
                 </tr>
