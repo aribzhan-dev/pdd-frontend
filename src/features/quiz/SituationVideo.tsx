@@ -28,13 +28,19 @@ export function SituationVideo({
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
+    // React sets `muted` as a property but not reliably as the HTML attribute,
+    // and the browser's autoplay policy reads the attribute — so a muted clip
+    // can still be treated as "has sound" and blocked. Setting it imperatively
+    // here guarantees the element is muted before play() is attempted.
+    video.muted = muted;
     video.currentTime = 0;
     if (autoPlay) {
-      // Autoplay can be refused (a device in low-power mode, for instance);
-      // the replay button is then the way in, so the rejection is not an error.
+      // Autoplay can still be refused (a device in low-power mode, for
+      // instance); preload="auto" means the first frame is already painted, so
+      // the student sees the situation even when it does not start on its own.
       void video.play().catch(() => setIsPlaying(false));
     }
-  }, [src, autoPlay]);
+  }, [src, autoPlay, muted]);
 
   function replay(): void {
     const video = videoRef.current;
@@ -50,10 +56,12 @@ export function SituationVideo({
           ref={videoRef}
           key={src}
           className="clip__video"
+          autoPlay={autoPlay}
+          loop={autoPlay}
           muted={muted}
           playsInline
           webkit-playsinline="true"
-          preload="metadata"
+          preload="auto"
           disablePictureInPicture
           controlsList="nodownload noplaybackrate"
           onPlay={() => setIsPlaying(true)}
