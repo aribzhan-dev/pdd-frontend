@@ -40,7 +40,6 @@ const RU = {
   showPassword: "Показать пароль",
   hidePassword: "Скрыть пароль",
   loginHint: "Логин и пароль выдаёт учебный центр",
-  contactUs: "Связаться с нами",
 
   // Navigation
   topics: "Темы",
@@ -173,7 +172,6 @@ const KZ: Strings = {
   showPassword: "Құпия сөзді көрсету",
   hidePassword: "Құпия сөзді жасыру",
   loginHint: "Логин мен құпия сөзді оқу орталығы береді",
-  contactUs: "Бізбен байланысу",
 
   // Navigation
   topics: "Тақырыптар",
