@@ -2,8 +2,13 @@
 //
 // The browser's own control bar carries a timeline, volume, download and a
 // picture-in-picture menu — none of which mean anything for a five-second
-// silent loop, and all of which render differently on every platform. A single
+// silent clip, and all of which render differently on every platform. A single
 // replay button behaves identically on a phone, a tablet and a desktop.
+//
+// The clip plays once and stops on its last frame. Looping it would keep the
+// situation moving under a student who is trying to read the question, so a
+// second viewing is theirs to ask for — via the replay button or by tapping
+// the clip itself.
 
 import { useEffect, useRef, useState } from "react";
 
@@ -57,7 +62,6 @@ export function SituationVideo({
           key={src}
           className="clip__video"
           autoPlay={autoPlay}
-          loop={autoPlay}
           muted={muted}
           playsInline
           webkit-playsinline="true"
