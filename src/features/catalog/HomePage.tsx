@@ -1,12 +1,19 @@
 // Student home: the two practice modes, then the topic catalogue.
+//
+// The catalogue serves two starts. Tapping a topic runs that one topic in
+// full; ticking several and using the picker bar draws a mixed set of up to
+// forty questions from them — fewer when the chosen topics hold fewer.
 
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { ApiError } from "@/api/client";
 import { contentApi } from "@/api/content";
-import { quizApi, type QuizMode } from "@/api/quiz";
+import { quizApi, type QuizMode, type StartOptions } from "@/api/quiz";
 import { StartTestCard } from "@/features/catalog/StartTestCard";
+import { TopicPickerBar } from "@/features/catalog/TopicPickerBar";
+import { TopicRow } from "@/features/catalog/TopicRow";
+import { useTopicSelection } from "@/features/catalog/useTopicSelection";
 import { useLanguage } from "@/i18n/LanguageContext";
 import type { Session, TopicBrief } from "@/types/api";
 
@@ -17,6 +24,7 @@ export function HomePage() {
   const [active, setActive] = useState<Session | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isStarting, setIsStarting] = useState(false);
+  const selection = useTopicSelection();
 
   const load = useCallback(async () => {
     setError(null);
@@ -36,11 +44,14 @@ export function HomePage() {
     void load();
   }, [load]);
 
-  async function start(mode: QuizMode, topicId?: number): Promise<void> {
+  async function start(
+    mode: QuizMode,
+    options: StartOptions = {},
+  ): Promise<void> {
     setIsStarting(true);
     setError(null);
     try {
-      await quizApi.start(mode, language, topicId);
+      await quizApi.start(mode, language, options);
       navigate("/quiz");
     } catch (cause) {
       setError(cause instanceof ApiError ? cause.message : t.error);
@@ -92,27 +103,32 @@ export function HomePage() {
       </button>
 
       <h2 className="section-title">{t.topicsSection}</h2>
+      <p className="muted">{t.pickTopicsHint}</p>
+
       <div className="topics">
         {topics.map((topic) => (
-          <button
+          <TopicRow
             key={topic.id}
-            className="topic"
-            disabled={isStarting}
-            onClick={() => void start("topic", topic.id)}
-          >
-            <span className="topic__number">{topic.number}</span>
-            <span className="topic__body">
-              <span className="topic__title">{topic.title}</span>
-              <span className="topic__meta">
-                {topic.question_count} {t.questions}
-              </span>
-            </span>
-            {topic.best_percent !== null && (
-              <span className="pill pill--success">{topic.best_percent}%</span>
-            )}
-          </button>
+            topic={topic}
+            isSelected={selection.isSelected(topic.id)}
+            isDisabled={isStarting}
+            questionsLabel={t.questions}
+            onToggle={selection.toggle}
+            onStart={(topicId) => void start("topic", { topicId })}
+          />
         ))}
       </div>
+
+      {selection.hasSelection && (
+        <TopicPickerBar
+          count={selection.count}
+          isStarting={isStarting}
+          onStart={() =>
+            void start("custom", { topicIds: selection.topicIds })
+          }
+          onClear={selection.clear}
+        />
+      )}
     </div>
   );
 }

@@ -58,6 +58,13 @@ const RU = {
   trainingHint: "40 вопросов без ограничения по времени",
   mistakes: "Работа над ошибками",
   mistakesHint: "Вопросы, где вы ошибались",
+  pickTopicsHint:
+    "Отметьте несколько тем — из них соберётся тест до 40 вопросов",
+  topicsPicked: (count: number) =>
+    `Выбрано ${count} ${pluralRu(count, "тема", "темы", "тем")}`,
+  pickedRunHint: "до 40 случайных вопросов",
+  startPicked: "Начать по выбранным",
+  clearPicked: "Сбросить",
   mistakesEmpty: "Пока нет ошибок",
   topicsSection: "Темы",
   questions: "вопросов",
@@ -190,6 +197,12 @@ const KZ: Strings = {
   trainingHint: "Уақыт шектеусіз 40 сұрақ",
   mistakes: "Қателермен жұмыс",
   mistakesHint: "Сіз қателескен сұрақтар",
+  pickTopicsHint:
+    "Бірнеше тақырыпты белгілеңіз — олардан 40 сұраққа дейін тест жиналады",
+  topicsPicked: (count: number) => `${count} тақырып таңдалды`,
+  pickedRunHint: "40-қа дейін кездейсоқ сұрақ",
+  startPicked: "Таңдалғандар бойынша бастау",
+  clearPicked: "Тазалау",
   mistakesEmpty: "Әзірге қате жоқ",
   topicsSection: "Тақырыптар",
   questions: "сұрақ",

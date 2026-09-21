@@ -64,21 +64,48 @@
   gap: var(--space-2);
 }
 
-.topic {
+/* The card is the row, not the button: a checkbox cannot sit inside a
+   <button>, so the two controls live side by side and share one border. */
+.topic-row {
   display: flex;
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-4);
-  text-align: left;
   background: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.topic:hover:not(:disabled) {
+.topic-row:hover {
+  border-color: var(--color-primary);
+}
+
+/* A ticked topic keeps its highlight after the pointer leaves — the selection
+   has to stay readable while the student scrolls on through the list. */
+.topic-row.is-selected {
   border-color: var(--color-primary);
   background: var(--color-primary-soft);
+}
+
+.topic-row__check {
+  flex: none;
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+}
+
+.topic {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0;
+  text-align: left;
+  background: transparent;
+  border: none;
 }
 
 .topic__number {
@@ -223,5 +250,60 @@
 
   .topic {
     padding: var(--space-3);
+  }
+}
+
+/* --- Picker bar for a multi-topic run --- */
+
+/* Sticky at the foot of the viewport: the topic list is long, and ticking a
+   box near the bottom should not mean scrolling back up to act on it. */
+.picker {
+  position: sticky;
+  bottom: var(--space-3);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.picker__summary {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.picker__count {
+  font-weight: 600;
+}
+
+.picker__hint {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+
+.picker__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* On a phone the two buttons need the full width to stay tappable. */
+@media (max-width: 600px) {
+  .picker {
+    align-items: stretch;
+  }
+
+  .picker__actions {
+    width: 100%;
+  }
+
+  .picker__actions .btn {
+    flex: 1;
   }
 }

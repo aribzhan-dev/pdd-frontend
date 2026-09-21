@@ -10,7 +10,20 @@ import type {
   SessionResult,
 } from "@/types/api";
 
-export type QuizMode = "topic" | "exam" | "training" | "mistakes";
+export type QuizMode =
+  | "topic"
+  | "exam"
+  | "training"
+  | "mistakes"
+  | "custom";
+
+/** Which slice of the catalogue a run is built from. */
+export interface StartOptions {
+  /** A single topic, taken in full — the "topic" mode. */
+  topicId?: number;
+  /** Several topics to draw from — the "custom" mode. */
+  topicIds?: readonly number[];
+}
 
 export const quizApi = {
   /** Returns null (HTTP 204) when there is no unfinished session. */
@@ -20,10 +33,19 @@ export const quizApi = {
   get: (sessionId: number, lang: Language) =>
     request<Session>(`/quiz/sessions/${sessionId}`, { query: { lang } }),
 
-  start: (mode: QuizMode, language: Language, topicId?: number) =>
+  /**
+   * `topicId` belongs to a single-topic run, `topicIds` to a custom one; the
+   * other modes need neither.
+   */
+  start: (mode: QuizMode, language: Language, options: StartOptions = {}) =>
     request<Session>("/quiz/sessions", {
       method: "POST",
-      body: { mode, language, topic_id: topicId ?? null },
+      body: {
+        mode,
+        language,
+        topic_id: options.topicId ?? null,
+        topic_ids: options.topicIds ?? [],
+      },
     }),
 
   answer: (

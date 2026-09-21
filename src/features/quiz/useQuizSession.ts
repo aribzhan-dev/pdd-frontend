@@ -7,7 +7,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { ApiError } from "@/api/client";
-import { quizApi, type QuizMode } from "@/api/quiz";
+import { quizApi, type QuizMode, type StartOptions } from "@/api/quiz";
 import { useLanguage } from "@/i18n/LanguageContext";
 import type {
   AnswerResult,
@@ -31,7 +31,7 @@ interface QuizState {
   startSession: (
     mode: QuizMode,
     language: Language,
-    topicId?: number,
+    options?: StartOptions,
   ) => Promise<void>;
   restore: () => Promise<void>;
   reset: () => void;
@@ -127,11 +127,15 @@ export function useQuizSession(): QuizState {
   }, [restore]);
 
   const startSession = useCallback(
-    async (mode: QuizMode, startLanguage: Language, topicId?: number) => {
+    async (
+      mode: QuizMode,
+      startLanguage: Language,
+      options: StartOptions = {},
+    ) => {
       setIsLoading(true);
       setError(null);
       try {
-        adopt(await quizApi.start(mode, startLanguage, topicId), false);
+        adopt(await quizApi.start(mode, startLanguage, options), false);
       } catch (cause) {
         setError(messageOf(cause));
       } finally {
