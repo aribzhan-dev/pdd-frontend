@@ -12,6 +12,7 @@ import { AnswerList } from "@/features/quiz/AnswerList";
 import { CountdownTimer } from "@/features/quiz/CountdownTimer";
 import { MediaPanel } from "@/features/quiz/MediaPanel";
 import { QuestionNav } from "@/features/quiz/QuestionNav";
+import { useEnterToAdvance } from "@/features/quiz/useEnterToAdvance";
 import { useQuizSession } from "@/features/quiz/useQuizSession";
 import { useLanguage } from "@/i18n/LanguageContext";
 
@@ -22,9 +23,27 @@ export function QuizPage() {
   const [isFinishing, setIsFinishing] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
+  // Derived above the early returns so the keyboard hook below can run on
+  // every render, which is what the rules of hooks require.
+  const { session, position } = quiz;
+  const item = session?.items[position];
+  const isAnswered = item?.is_answered ?? false;
+  const isLast = session ? position === session.total_questions - 1 : false;
+
+  // Once there is nothing left to answer, finishing becomes the main action
+  // and moves next to the question — the link in the bar would just repeat it.
+  const isComplete = session
+    ? session.answered_count === session.total_questions ||
+      (isAnswered && isLast)
+    : false;
+
+  // Enter advances exactly when the "Далее" button is on screen, and never
+  // while the finish dialog is holding the student's attention.
+  useEnterToAdvance(isAnswered && !isComplete && !isConfirmOpen, quiz.goNext);
+
   if (quiz.isLoading) return <div className="state">{t.loading}</div>;
 
-  if (!quiz.session) {
+  if (!session) {
     return (
       <div className="state">
         <p>{quiz.error ?? "Нет активного теста"}</p>
@@ -35,24 +54,18 @@ export function QuizPage() {
     );
   }
 
-  const { session, position } = quiz;
   const question = session.questions[position];
-  const item = session.items[position];
   if (!question || !item) return <div className="state">{t.error}</div>;
 
-  const isAnswered = item.is_answered;
-  const isLast = position === session.total_questions - 1;
-
-  // Once there is nothing left to answer, finishing becomes the main action
-  // and moves next to the question — the link in the bar would just repeat it.
-  const isComplete =
-    session.answered_count === session.total_questions || (isAnswered && isLast);
+  // Captured rather than read through `session`: the closure outlives the
+  // narrowing the guard above gives us.
+  const sessionId = session.id;
 
   async function submit(): Promise<void> {
     setIsFinishing(true);
     try {
-      await quizApi.finish(session.id, language);
-      navigate(`/result/${session.id}`);
+      await quizApi.finish(sessionId, language);
+      navigate(`/result/${sessionId}`);
     } finally {
       setIsFinishing(false);
     }
