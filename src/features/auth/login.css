@@ -4,7 +4,11 @@
   display: grid;
   place-items: center;
   padding: var(--space-5);
-  background: linear-gradient(180deg, var(--color-surface-alt), #fff 60%);
+  background: linear-gradient(
+    180deg,
+    var(--color-surface-alt),
+    var(--color-canvas) 60%
+  );
 }
 
 .login__card {
@@ -30,7 +34,7 @@
   padding: 0.35rem 0.9rem;
   border-radius: var(--radius-sm);
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-on-accent);
   font-weight: 700;
   letter-spacing: 0.06em;
 }
@@ -110,5 +114,7 @@
    have to read a Russian form to find out how to change the language. */
 .login__lang {
   display: flex;
+  align-items: center;
   justify-content: center;
+  gap: var(--space-3);
 }

@@ -10,6 +10,31 @@
       rel="stylesheet"
     />
     <title>ПДД — онлайн тесты</title>
+    <!--
+      Stamp the theme before the first paint. React only mounts after the
+      bundle has parsed, and until then the page would flash white at a
+      student who chose dark — so the stored choice, or the system's, is read
+      here and applied to <html> straight away. ThemeProvider takes over from
+      the same value, so nothing moves when it mounts.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("pdd.theme");
+          var theme =
+            stored === "dark" || stored === "light"
+              ? stored
+              : window.matchMedia &&
+                  window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light";
+          document.documentElement.dataset.theme = theme;
+        } catch (error) {
+          // Storage blocked, or an ancient browser: light is the safe default
+          // and the stylesheet already assumes it.
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

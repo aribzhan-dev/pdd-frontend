@@ -154,6 +154,10 @@ const RU = {
   days: (count: number) =>
     `${count} ${pluralRu(count, "день", "дня", "дней")}`,
 
+  // Appearance
+  switchToDark: "Тёмная тема",
+  switchToLight: "Светлая тема",
+
   // Generic
   loading: "Загрузка…",
   error: "Что-то пошло не так",
@@ -285,6 +289,10 @@ const KZ: Strings = {
   lastLogin: "Соңғы кіру",
   never: "Кірмеген",
   days: (count: number) => `${count} күн`,
+
+  // Appearance
+  switchToDark: "Қараңғы тақырып",
+  switchToLight: "Жарық тақырып",
 
   // Generic
   loading: "Жүктелуде…",

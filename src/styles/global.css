@@ -90,7 +90,7 @@ a {
 
 .btn--primary {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-on-accent);
 }
 
 .btn--primary:hover:not(:disabled) {
@@ -117,7 +117,7 @@ a {
 
 .btn--danger {
   background: var(--color-danger);
-  color: #fff;
+  color: var(--color-on-accent);
 }
 
 .btn:disabled {
@@ -179,3 +179,27 @@ a {
   text-align: center;
   color: var(--color-muted);
 }
+
+/* Light / dark toggle. Icon-only, so it needs a hit area of its own rather
+   than the padding a labelled button gets for free. */
+.themeswitch {
+  display: grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  flex: none;
+  padding: 0;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-ink-soft);
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.themeswitch:hover,
+.themeswitch:focus-visible {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+  background: var(--color-primary-soft);
+}
+

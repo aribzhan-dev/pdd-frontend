@@ -8,6 +8,7 @@ import { PasswordField } from "@/components/PasswordField";
 import { TextField } from "@/components/TextField";
 import { useAuth } from "@/features/auth/AuthContext";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { ThemeSwitch } from "@/components/ThemeSwitch";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 const IIN_LENGTH = 12;
@@ -46,6 +47,7 @@ export function LoginPage() {
       <form className="login__card" onSubmit={handleSubmit}>
         <div className="login__lang">
           <LanguageSwitch value={language} onChange={setLanguage} />
+          <ThemeSwitch />
         </div>
 
         <div className="login__brand">

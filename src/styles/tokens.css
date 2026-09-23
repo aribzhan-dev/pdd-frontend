@@ -1,6 +1,8 @@
 /* Design tokens. Every colour, radius and spacing step used by the app is
    declared here once, so the whole interface stays visually consistent. */
 :root {
+  color-scheme: light;
+
   /* Brand */
   --color-primary: #2563eb;
   --color-primary-hover: #1d4ed8;
@@ -20,6 +22,9 @@
   --color-surface: #ffffff;
   --color-surface-alt: #f5f7fa;
   --color-canvas: #ffffff;
+  /* Text placed on a saturated accent — a chip, a primary button. Light on
+     the light theme's deep accents, dark on the dark theme's bright ones. */
+  --color-on-accent: #ffffff;
 
   /* Type */
   --font-body: "Rubik", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -49,4 +54,43 @@
   --shadow-md: 0 4px 16px rgba(22, 48, 92, 0.08);
 
   --layout-max: 1180px;
+}
+
+/* Dark theme.
+   The provider resolves the choice — stored, or the system's — into an
+   explicit data-theme before the first paint, so this is the only dark block:
+   there is no second copy behind a prefers-color-scheme query to keep in step
+   with it.
+   The accents are deliberately brighter than their light counterparts. On a
+   dark ground they are read as text (a verdict on its tinted background), and
+   --color-on-accent flips to near-black so the same colours still work the
+   other way round, as chip and button backgrounds. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Brand */
+  --color-primary: #6aa5ff;
+  --color-primary-hover: #8cbcff;
+  --color-primary-soft: #1a2740;
+
+  /* Verdicts */
+  --color-success: #4ade80;
+  --color-success-soft: #14301f;
+  --color-danger: #ff7a66;
+  --color-danger-soft: #3a1c17;
+
+  /* Neutrals */
+  --color-ink: #e9eefb;
+  --color-ink-soft: #aab8d2;
+  --color-muted: #7f8da8;
+  --color-line: #2b3651;
+  --color-surface: #151d2e;
+  --color-surface-alt: #1e2739;
+  --color-canvas: #0f1522;
+  --color-on-accent: #0f1522;
+
+  /* A light-theme shadow is invisible on a dark ground; these carry the
+     elevation instead. */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.5);
 }

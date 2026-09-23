@@ -11,15 +11,18 @@ import { BrowserRouter } from "react-router-dom";
 import { AppRoutes } from "@/app/routes";
 import { AuthProvider } from "@/features/auth/AuthContext";
 import { LanguageProvider } from "@/i18n/LanguageContext";
+import { ThemeProvider } from "@/theme/ThemeContext";
 
 export function App() {
   return (
     <BrowserRouter>
-      <LanguageProvider>
-        <AuthProvider>
-          <AppRoutes />
-        </AuthProvider>
-      </LanguageProvider>
+      <ThemeProvider>
+        <LanguageProvider>
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
+        </LanguageProvider>
+      </ThemeProvider>
     </BrowserRouter>
   );
 }

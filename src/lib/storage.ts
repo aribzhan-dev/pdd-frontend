@@ -1,9 +1,11 @@
-// Tokens and the last language choice live in localStorage so a reload keeps
-// the user signed in. Every access is guarded: private-mode browsers throw.
+// Tokens, the last language choice and the theme live in localStorage so a
+// reload keeps the user signed in and the screen looking the same. Every
+// access is guarded: private-mode browsers throw.
 
 const ACCESS_TOKEN_KEY = "pdd.access_token";
 const REFRESH_TOKEN_KEY = "pdd.refresh_token";
 const LANGUAGE_KEY = "pdd.language";
+const THEME_KEY = "pdd.theme";
 
 function read(key: string): string | null {
   try {
@@ -44,4 +46,10 @@ export const tokenStorage = {
 export const languageStorage = {
   get: () => read(LANGUAGE_KEY),
   set: (language: string) => write(LANGUAGE_KEY, language),
+};
+
+/** Null means no choice has been made yet, so the system preference wins. */
+export const themeStorage = {
+  get: () => read(THEME_KEY),
+  set: (theme: string) => write(THEME_KEY, theme),
 };

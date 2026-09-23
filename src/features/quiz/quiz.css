@@ -57,6 +57,14 @@
   padding-top: var(--space-2);
 }
 
+/* The two switches travel together: the bar is space-between, and loose
+   children would push the finish link into the middle of it. */
+.quiz__tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
 /* --- Language switch --- */
 .langswitch {
   display: flex;
@@ -148,17 +156,17 @@
 
 .chip--current {
   background: var(--color-primary);
-  color: #fff;
+  color: var(--color-on-accent);
 }
 
 .chip--correct {
   background: var(--color-success);
-  color: #fff;
+  color: var(--color-on-accent);
 }
 
 .chip--wrong {
   background: var(--color-danger);
-  color: #fff;
+  color: var(--color-on-accent);
 }
 
 /* Answered-so-far bar: what the wrapped grid used to show at a glance. */
@@ -417,7 +425,7 @@
 /* Finishing the whole run reads as completion, not as another step forward. */
 .btn--finish {
   background: var(--color-success);
-  color: #fff;
+  color: var(--color-on-accent);
   font-weight: 600;
 }
 
@@ -434,7 +442,7 @@
 /* Answered, verdict withheld — the exam's chip state. */
 .chip--answered {
   background: var(--color-ink-soft);
-  color: #fff;
+  color: var(--color-on-accent);
 }
 
 /* The picked option before any verdict is known. */

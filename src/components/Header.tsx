@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import { useAuth } from "@/features/auth/AuthContext";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { ThemeSwitch } from "@/components/ThemeSwitch";
 import { useLanguage } from "@/i18n/LanguageContext";
 import { pluralDays } from "@/lib/format";
 
@@ -49,6 +50,7 @@ export function Header() {
 
         <div className="header__account">
           <LanguageSwitch value={language} onChange={setLanguage} />
+          <ThemeSwitch />
           <div className="header__identity">
             <span className="header__name">{user.full_name}</span>
             <span className="header__meta">

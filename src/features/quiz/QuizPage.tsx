@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { quizApi } from "@/api/quiz";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { ThemeSwitch } from "@/components/ThemeSwitch";
 import { AnswerList } from "@/features/quiz/AnswerList";
 import { CountdownTimer } from "@/features/quiz/CountdownTimer";
 import { MediaPanel } from "@/features/quiz/MediaPanel";
@@ -99,7 +100,10 @@ export function QuizPage() {
       />
 
       <header className="quiz__bar">
-        <LanguageSwitch value={language} onChange={setLanguage} />
+        <div className="quiz__tools">
+          <LanguageSwitch value={language} onChange={setLanguage} />
+          <ThemeSwitch />
+        </div>
         {!isComplete && (
           <button
             type="button"
