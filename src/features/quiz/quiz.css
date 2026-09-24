@@ -450,3 +450,41 @@
   border-color: var(--color-primary);
   background: var(--color-primary-soft);
 }
+
+/* --- The run's mistakes, gathered under the strip ---
+   Sits directly below the progress bar, where the eye already is after a
+   wrong answer. It scrolls sideways for the same reason the main strip does:
+   on a phone a dozen chips would otherwise push the question off screen. */
+.mistakes-strip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-2) 0;
+}
+
+.mistakes-strip__label {
+  flex: none;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-danger);
+}
+
+.mistakes-strip__chips {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+
+.mistakes-strip__chips::-webkit-scrollbar {
+  display: none;
+}
+
+/* The chip for the question on screen: outlined rather than recoloured, so
+   the strip stays entirely red and only says which one you are looking at. */
+.mistakes-strip .chip.is-current {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 1px;
+}

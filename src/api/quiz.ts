@@ -25,6 +25,8 @@ export interface StartOptions {
   part?: number;
   /** Several topics to draw from — the "custom" mode. */
   topicIds?: readonly number[];
+  /** A finished run to retake the mistakes of — the "mistakes" mode. */
+  fromSessionId?: number;
 }
 
 export const quizApi = {
@@ -48,6 +50,7 @@ export const quizApi = {
         topic_id: options.topicId ?? null,
         part: options.part ?? null,
         topic_ids: options.topicIds ?? [],
+        from_session_id: options.fromSessionId ?? null,
       },
     }),
 

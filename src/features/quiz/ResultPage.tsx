@@ -22,6 +22,7 @@ export function ResultPage() {
   const [result, setResult] = useState<SessionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<Filter>("all");
+  const [isRetrying, setIsRetrying] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -41,10 +42,26 @@ export function ResultPage() {
     };
   }, [sessionId, language, t]);
 
+  // Run the slips of this sitting again, rather than everything the student
+  // has ever got wrong — which is what the catalogue's mistakes mode offers.
+  async function retryMistakes(sessionId: number): Promise<void> {
+    setIsRetrying(true);
+    setError(null);
+    try {
+      await quizApi.start("mistakes", language, { fromSessionId: sessionId });
+      navigate("/quiz");
+    } catch (cause) {
+      setError(cause instanceof ApiError ? cause.message : t.error);
+    } finally {
+      setIsRetrying(false);
+    }
+  }
+
   if (error) return <div className="state">{error}</div>;
   if (!result) return <div className="state">{t.loading}</div>;
 
   const shown = filter === "all" ? result.review : result.mistakes;
+  const mistakeCount = result.mistakes.length;
 
   return (
     <div className="page stack">
@@ -66,7 +83,21 @@ export function ResultPage() {
       </section>
 
       <div className="row">
-        <button className="btn btn--primary" onClick={() => navigate("/")}>
+        {mistakeCount > 0 && (
+          <button
+            className="btn btn--primary"
+            disabled={isRetrying}
+            onClick={() => void retryMistakes(result.id)}
+          >
+            {isRetrying
+              ? t.loading
+              : `${t.retryMistakes} (${mistakeCount})`}
+          </button>
+        )}
+        <button
+          className={`btn ${mistakeCount > 0 ? "btn--ghost" : "btn--primary"}`}
+          onClick={() => navigate("/")}
+        >
           {t.toTopics}
         </button>
         <button className="btn btn--ghost" onClick={() => navigate("/history")}>

@@ -12,6 +12,7 @@ import { ThemeSwitch } from "@/components/ThemeSwitch";
 import { AnswerList } from "@/features/quiz/AnswerList";
 import { CountdownTimer } from "@/features/quiz/CountdownTimer";
 import { MediaPanel } from "@/features/quiz/MediaPanel";
+import { MistakeStrip } from "@/features/quiz/MistakeStrip";
 import { QuestionNav } from "@/features/quiz/QuestionNav";
 import { useEnterToAdvance } from "@/features/quiz/useEnterToAdvance";
 import { useQuizSession } from "@/features/quiz/useQuizSession";
@@ -132,6 +133,16 @@ export function QuizPage() {
           ) : null
         }
       />
+
+      {/* Withheld during an exam: it says nothing until the paper is in. */}
+      {session.reveals_answers && (
+        <MistakeStrip
+          items={session.items}
+          currentPosition={position}
+          label={t.mistakesSoFar}
+          onSelect={quiz.goTo}
+        />
+      )}
 
       {quiz.wasResumed && (
         <p className="notice notice--info quiz__resumed">{t.resumeNotice}</p>

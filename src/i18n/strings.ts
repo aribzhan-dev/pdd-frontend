@@ -58,6 +58,8 @@ const RU = {
   trainingHint: "40 вопросов без ограничения по времени",
   mistakes: "Работа над ошибками",
   mistakesHint: "Вопросы, где вы ошибались",
+  mistakesSoFar: "Ошибки",
+  retryMistakes: "Повторить ошибки",
   pickTopicsHint:
     "Отметьте несколько тем — из них соберётся тест до 40 вопросов",
   partsCount: (count: number) =>
@@ -204,6 +206,8 @@ const KZ: Strings = {
   trainingHint: "Уақыт шектеусіз 40 сұрақ",
   mistakes: "Қателермен жұмыс",
   mistakesHint: "Сіз қателескен сұрақтар",
+  mistakesSoFar: "Қателер",
+  retryMistakes: "Қателерді қайталау",
   pickTopicsHint:
     "Бірнеше тақырыпты белгілеңіз — олардан 40 сұраққа дейін тест жиналады",
   partsCount: (count: number) => `${count} бөлім`,
