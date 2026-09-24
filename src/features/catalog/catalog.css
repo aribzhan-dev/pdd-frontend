@@ -65,16 +65,23 @@
 }
 
 /* The card is the row, not the button: a checkbox cannot sit inside a
-   <button>, so the two controls live side by side and share one border. */
+   <button>, so the two controls live side by side and share one border. A
+   long topic adds a second storey below them for its parts, which is why the
+   card stacks and the controls get a flex row of their own. */
 .topic-row {
   display: flex;
-  align-items: center;
-  gap: var(--space-3);
+  flex-direction: column;
   padding: var(--space-3) var(--space-4);
   background: var(--color-surface);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-md);
   transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.topic-row__main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .topic-row:hover {
@@ -306,4 +313,59 @@
   .picker__actions .btn {
     flex: 1;
   }
+}
+
+/* --- Parts of a long topic --- */
+
+.topic__chevron {
+  flex: none;
+  color: var(--color-muted);
+  font-size: var(--text-lg);
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+.topic__chevron.is-open {
+  transform: rotate(180deg);
+}
+
+.topic-parts {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-line);
+}
+
+.topic-parts__label {
+  font-size: var(--text-xs);
+  color: var(--color-muted);
+}
+
+.topic-parts__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+/* Sized like the numbered strip's chips: same job, same weight on the page. */
+.topic-parts__item {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-alt);
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.topic-parts__item:hover:not(:disabled),
+.topic-parts__item:focus-visible {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-accent);
 }

@@ -112,9 +112,10 @@ export function HomePage() {
             topic={topic}
             isSelected={selection.isSelected(topic.id)}
             isDisabled={isStarting}
-            questionsLabel={t.questions}
             onToggle={selection.toggle}
-            onStart={(topicId) => void start("topic", { topicId })}
+            onStart={(topicId, part) =>
+              void start("topic", { topicId, part })
+            }
           />
         ))}
       </div>

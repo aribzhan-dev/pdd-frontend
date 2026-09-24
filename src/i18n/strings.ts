@@ -60,6 +60,9 @@ const RU = {
   mistakesHint: "Вопросы, где вы ошибались",
   pickTopicsHint:
     "Отметьте несколько тем — из них соберётся тест до 40 вопросов",
+  partsCount: (count: number) =>
+    `${count} ${pluralRu(count, "часть", "части", "частей")}`,
+  choosePart: "Выберите часть:",
   topicsPicked: (count: number) =>
     `Выбрано ${count} ${pluralRu(count, "тема", "темы", "тем")}`,
   pickedRunHint: "до 40 случайных вопросов",
@@ -203,6 +206,8 @@ const KZ: Strings = {
   mistakesHint: "Сіз қателескен сұрақтар",
   pickTopicsHint:
     "Бірнеше тақырыпты белгілеңіз — олардан 40 сұраққа дейін тест жиналады",
+  partsCount: (count: number) => `${count} бөлім`,
+  choosePart: "Бөлімді таңдаңыз:",
   topicsPicked: (count: number) => `${count} тақырып таңдалды`,
   pickedRunHint: "40-қа дейін кездейсоқ сұрақ",
   startPicked: "Таңдалғандар бойынша бастау",

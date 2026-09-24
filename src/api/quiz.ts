@@ -19,8 +19,10 @@ export type QuizMode =
 
 /** Which slice of the catalogue a run is built from. */
 export interface StartOptions {
-  /** A single topic, taken in full — the "topic" mode. */
+  /** A single topic — the "topic" mode. */
   topicId?: number;
+  /** Which part of a long topic to run, 1-based. Omit to take it whole. */
+  part?: number;
   /** Several topics to draw from — the "custom" mode. */
   topicIds?: readonly number[];
 }
@@ -44,6 +46,7 @@ export const quizApi = {
         mode,
         language,
         topic_id: options.topicId ?? null,
+        part: options.part ?? null,
         topic_ids: options.topicIds ?? [],
       },
     }),

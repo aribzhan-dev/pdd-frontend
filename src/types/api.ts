@@ -37,6 +37,8 @@ export interface TopicBrief {
   number: number;
   title: string;
   question_count: number;
+  /** How many parts the topic is offered in; 1 means it is run in one go. */
+  part_count: number;
   best_percent: number | null;
 }
 
