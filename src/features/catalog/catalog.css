@@ -350,8 +350,13 @@
   gap: var(--space-2);
 }
 
-/* Sized like the numbered strip's chips: same job, same weight on the page. */
+/* Sized like the numbered strip's chips: same job, same weight on the page.
+   A part that has been attempted carries its score beside its number, so the
+   row reads as progress through the chapter rather than a list of links. */
 .topic-parts__item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
   padding: 0.4rem 0.75rem;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-pill);
@@ -367,5 +372,22 @@
 .topic-parts__item:focus-visible {
   border-color: var(--color-primary);
   background: var(--color-primary);
+  color: var(--color-on-accent);
+}
+
+.topic-parts__index {
+  font-variant-numeric: tabular-nums;
+}
+
+.topic-parts__score {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-success);
+}
+
+/* On hover the chip fills with the accent, so the score has to come along or
+   it drops to unreadable green on blue. */
+.topic-parts__item:hover:not(:disabled) .topic-parts__score,
+.topic-parts__item:focus-visible .topic-parts__score {
   color: var(--color-on-accent);
 }

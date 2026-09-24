@@ -33,9 +33,8 @@ export function TopicRow({
 }: TopicRowProps) {
   const t = useStrings();
   const [isOpen, setIsOpen] = useState(false);
-  const isSplit = topic.part_count > 1;
-
-  const parts = Array.from({ length: topic.part_count }, (_, index) => index + 1);
+  const parts = topic.parts;
+  const isSplit = parts.length > 0;
 
   return (
     <div className={`topic-row ${isSelected ? "is-selected" : ""}`}>
@@ -63,7 +62,7 @@ export function TopicRow({
             <span className="topic__title">{topic.title}</span>
             <span className="topic__meta">
               {topic.question_count} {t.questions}
-              {isSplit && ` · ${t.partsCount(topic.part_count)}`}
+              {isSplit && ` · ${t.partsCount(parts.length)}`}
             </span>
           </span>
           {topic.best_percent !== null && (
@@ -83,13 +82,21 @@ export function TopicRow({
           <div className="topic-parts__list">
             {parts.map((part) => (
               <button
-                key={part}
+                key={part.index}
                 type="button"
                 className="topic-parts__item"
                 disabled={isDisabled}
-                onClick={() => onStart(topic.id, part)}
+                onClick={() => onStart(topic.id, part.index)}
+                title={`${part.question_count} ${t.questions}`}
               >
-                {part}/{topic.part_count}
+                <span className="topic-parts__index">
+                  {part.index}/{parts.length}
+                </span>
+                {part.best_percent !== null && (
+                  <span className="topic-parts__score">
+                    {part.best_percent}%
+                  </span>
+                )}
               </button>
             ))}
           </div>

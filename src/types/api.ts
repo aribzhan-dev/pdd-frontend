@@ -32,13 +32,22 @@ export interface Question {
   answers: Answer[];
 }
 
+/** One sitting-sized stretch of a long topic, with its own score. */
+export interface TopicPartBrief {
+  /** 1-based, and what a run passes back as `part`. */
+  index: number;
+  question_count: number;
+  best_percent: number | null;
+}
+
 export interface TopicBrief {
   id: number;
   number: number;
   title: string;
   question_count: number;
-  /** How many parts the topic is offered in; 1 means it is run in one go. */
-  part_count: number;
+  /** Empty when the topic is short enough to be run in one go. */
+  parts: TopicPartBrief[];
+  /** Across the whole chapter: each part counts for what it holds. */
   best_percent: number | null;
 }
 
