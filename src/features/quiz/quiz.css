@@ -2,6 +2,10 @@
    strip under them, the question centred, then media beside the answers. */
 
 .quiz {
+  /* Auto horizontal margins disable stretching in the app's column flexbox.
+     Constrain the quiz itself so a long question strip cannot size the page. */
+  width: 100%;
+  min-width: 0;
   max-width: var(--layout-max);
   margin: 0 auto;
   padding: var(--space-4) var(--space-4) var(--space-8);

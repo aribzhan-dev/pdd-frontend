@@ -1,20 +1,26 @@
 // API and media are fixtures: these tests never log in or change real scores.
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
-import { chromium } from "playwright";
+import { mkdir } from "node:fs/promises";
+import { join } from "node:path";
+import { chromium, webkit } from "playwright";
 
 const baseURL = process.env.PDD_TEST_URL || "http://127.0.0.1:5173";
 let browser;
 before(async () => {
-  browser = await chromium.launch({
-    channel: process.env.PDD_BROWSER_CHANNEL || undefined,
+  const engine = process.env.PDD_BROWSER === "webkit" ? webkit : chromium;
+  browser = await engine.launch({
+    channel: engine === chromium ? process.env.PDD_BROWSER_CHANNEL : undefined,
   });
+  if (process.env.PDD_SCREENSHOT_DIR) {
+    await mkdir(process.env.PDD_SCREENSHOT_DIR, { recursive: true });
+  }
 });
 after(async () => { await browser?.close(); });
 
 const media = (url) => ({ url, kind: "situation", byte_size: 0 });
 
-async function setup(options) {
+async function setup(options, { questionCount = 40, longText = false } = {}) {
   const context = await browser.newContext(options);
   await context.addInitScript(() => {
     localStorage.setItem("pdd.access_token", "fixture-only");
@@ -27,8 +33,10 @@ async function setup(options) {
     };
   });
   const page = await context.newPage();
-  const questions = [1, 2, 3].map((id) => ({
-    id, text: `Question ${id}`, image: null,
+  const questions = Array.from({ length: questionCount }, (_, index) => index + 1).map((id) => ({
+    id, text: longText
+      ? `Question ${id}: С какой максимальной скоростью Вам разрешено продолжить движение легкового автомобиля после проезда данного дорожного знака?`
+      : `Question ${id}`, image: null,
     situation_video: media("/situation.mp4"),
     explanation: null, explanation_video: null, is_exam_only: false,
     answers: [
@@ -40,7 +48,7 @@ async function setup(options) {
     id: 123, mode: { value: "topic", label: "Topic" },
     status: { value: "in_progress", label: "Active" },
     language: "ru", topic_id: 1, title: "Fixture",
-    started_at: "2026-01-01T00:00:00Z", total_questions: 3,
+    started_at: "2026-01-01T00:00:00Z", total_questions: questionCount,
     answered_count: 0, correct_count: 0, can_finish: false,
     min_answers_to_finish: 1, time_limit_seconds: null, seconds_left: null,
     current_position: 0, reveals_answers: true, questions,
@@ -58,7 +66,7 @@ async function setup(options) {
     let data;
     if (path.endsWith("/auth/me")) {
       data = {
-        id: 100, full_name: "Fixture Student",
+        id: 100, full_name: "Тестовый Студент",
         role: { value: "student", label: "Студент" },
         student: {
           category: { value: "B", label: "B" },
@@ -90,8 +98,45 @@ async function setup(options) {
     await route.fulfill({ json: data });
   });
   await page.goto(`${baseURL}/quiz`);
-  await page.getByRole("heading", { name: "Question 1" }).waitFor();
+  await page.getByRole("heading", { name: questions[0].text, exact: true }).waitFor();
   return { context, page };
+}
+
+for (const width of [320, 375, 390, 430]) {
+  test(`39-question quiz fits ${width}px; only the number strip scrolls`, async () => {
+    const { context, page } = await setup({
+      viewport: { width, height: 844 },
+      screen: { width, height: 844 }, hasTouch: true, isMobile: true,
+    }, { questionCount: 39, longText: true });
+    try {
+      const sizes = await page.evaluate(() => ({
+        viewport: document.documentElement.clientWidth,
+        document: document.documentElement.scrollWidth,
+        quiz: document.querySelector(".quiz").getBoundingClientRect().width,
+        chips: document.querySelector(".chips").clientWidth,
+        chipContent: document.querySelector(".chips").scrollWidth,
+      }));
+      if (process.env.PDD_SCREENSHOT_DIR) {
+        await page.screenshot({
+          path: join(process.env.PDD_SCREENSHOT_DIR, `phone-${width}.png`), fullPage: true,
+        });
+      }
+      assert(sizes.document <= sizes.viewport + 1, JSON.stringify(sizes));
+      assert(sizes.chipContent > sizes.chips, "question strip must scroll internally");
+      // Reach a question outside the initial viewport without moving the page.
+      await page.locator(".chips button").last().scrollIntoViewIfNeeded();
+      await page.locator(".chips button").last().click();
+      await page.getByRole("heading", { name: /^Question 39:/ }).waitFor();
+      assert.equal(await page.evaluate(() => window.scrollX), 0);
+      await page.getByRole("button", { name: /Answer A/ }).click();
+      await page.getByText("Explanation 39", { exact: true }).waitFor();
+      assert(await page.evaluate(() =>
+        document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1,
+      ), "answered question must still fit");
+    } finally {
+      await context.close();
+    }
+  });
 }
 
 const cases = [
