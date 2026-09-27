@@ -9,6 +9,7 @@
 import { BrowserRouter } from "react-router-dom";
 
 import { AppRoutes } from "@/app/routes";
+import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/features/auth/AuthContext";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import { ThemeProvider } from "@/theme/ThemeContext";
@@ -19,7 +20,12 @@ export function App() {
       <ThemeProvider>
         <LanguageProvider>
           <AuthProvider>
-            <AppRoutes />
+            <div className="app-shell">
+              <div className="app-content">
+                <AppRoutes />
+              </div>
+              <Footer />
+            </div>
           </AuthProvider>
         </LanguageProvider>
       </ThemeProvider>

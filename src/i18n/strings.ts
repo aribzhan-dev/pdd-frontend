@@ -154,6 +154,11 @@ const RU = {
   newExpiry: "Новая дата окончания",
   accessLapsed: "срок истёк",
   nothingFound: "Ничего не найдено",
+  previousPage: "Назад",
+  nextPage: "Далее",
+  studentPagination: "Страницы списка студентов",
+  studentPageSummary: (page: number, pages: number, total: number) =>
+    `Страница ${page} из ${pages} · Всего студентов: ${total}`,
   lastLogin: "Последний вход",
   never: "Не входил",
   days: (count: number) =>
@@ -295,6 +300,11 @@ const KZ: Strings = {
   newExpiry: "Жаңа аяқталу күні",
   accessLapsed: "мерзімі бітті",
   nothingFound: "Ештеңе табылмады",
+  previousPage: "Артқа",
+  nextPage: "Келесі",
+  studentPagination: "Студенттер тізімінің беттері",
+  studentPageSummary: (page: number, pages: number, total: number) =>
+    `${page} / ${pages} бет · Барлығы: ${total} студент`,
   lastLogin: "Соңғы кіру",
   never: "Кірмеген",
   days: (count: number) => `${count} күн`,

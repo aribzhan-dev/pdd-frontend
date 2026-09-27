@@ -127,3 +127,13 @@ select.field__input {
   background: var(--color-danger-soft);
   color: var(--color-danger);
 }
+
+.student-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  color: var(--color-ink-soft);
+  font-size: var(--text-sm);
+}

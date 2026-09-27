@@ -74,6 +74,13 @@ function revealAnswers(
       ? {
           ...question,
           explanation: result.explanation ?? question.explanation,
+          explanation_video: result.explanation_video_url
+            ? {
+                url: result.explanation_video_url,
+                kind: "explanation",
+                byte_size: 0,
+              }
+            : question.explanation_video,
           answers: question.answers.map((answer) => ({
             ...answer,
             is_correct: answer.id === result.correct_answer_id,

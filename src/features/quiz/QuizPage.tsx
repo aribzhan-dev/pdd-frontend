@@ -156,12 +156,13 @@ export function QuizPage() {
 
       <div className="quiz__body">
         <MediaPanel
+          key={question.id}
           image={question.image}
           situationVideo={question.situation_video}
           explanationVideoUrl={
-            quiz.feedback?.explanation_video_url ??
-            question.explanation_video?.url ??
-            null
+            isAnswered && session.reveals_answers
+              ? question.explanation_video?.url ?? null
+              : null
           }
         />
 
@@ -190,11 +191,11 @@ export function QuizPage() {
 
           {isAnswered &&
             session.reveals_answers &&
-            (quiz.feedback?.explanation ?? question.explanation) && (
+            question.explanation && (
               <div className="explanation">
                 <p className="explanation__label">{t.explanation}</p>
                 <p className="explanation__text">
-                  {quiz.feedback?.explanation ?? question.explanation}
+                  {question.explanation}
                 </p>
               </div>
             )}

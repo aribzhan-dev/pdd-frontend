@@ -5,7 +5,7 @@
 // control is hidden for managers; the backend enforces the same rule
 // regardless of what the interface shows.
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ApiError } from "@/api/client";
 import { staffApi } from "@/api/staff";
@@ -19,6 +19,8 @@ import { useStrings } from "@/i18n/LanguageContext";
 import { formatDate, pluralDays } from "@/lib/format";
 import type { CredentialsIssued, LabeledValue, Student } from "@/types/api";
 
+const PAGE_SIZE = 20;
+
 export function StudentsPage() {
   const t = useStrings();
   const { role } = useAuth();
@@ -28,6 +30,11 @@ export function StudentsPage() {
   const [categories, setCategories] = useState<LabeledValue[]>([]);
   const [statuses, setStatuses] = useState<LabeledValue[]>([]);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const requestId = useRef(0);
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const [isCreating, setIsCreating] = useState(false);
   const [editing, setEditing] = useState<Student | null>(null);
   const [viewing, setViewing] = useState<Student | null>(null);
@@ -38,17 +45,31 @@ export function StudentsPage() {
   const [isExtending, setIsExtending] = useState(false);
 
   const load = useCallback(async () => {
+    const currentRequest = ++requestId.current;
     setError(null);
+    setIsLoading(true);
     try {
-      const page = await staffApi.listStudents(search);
-      setStudents(page.items);
+      const result = await staffApi.listStudents(search, page, PAGE_SIZE);
+      if (currentRequest !== requestId.current) return;
+      setTotal(result.total);
+      const lastPage = Math.max(1, Math.ceil(result.total / PAGE_SIZE));
+      if (page > lastPage) {
+        setPage(lastPage);
+        return;
+      }
+      setStudents(result.items);
     } catch (cause) {
-      setError(cause instanceof ApiError ? cause.message : t.error);
+      if (currentRequest === requestId.current) {
+        setError(cause instanceof ApiError ? cause.message : t.error);
+      }
+    } finally {
+      if (currentRequest === requestId.current) setIsLoading(false);
     }
-  }, [search]);
+  }, [search, page, t.error]);
 
   useEffect(() => {
     void load();
+    return () => { requestId.current += 1; };
   }, [load]);
 
   useEffect(() => {
@@ -187,16 +208,20 @@ export function StudentsPage() {
       <input
         className="field__input"
         placeholder={t.search}
+        aria-label={t.search}
         value={search}
-        onChange={(event) => setSearch(event.target.value)}
+        onChange={(event) => {
+          setSearch(event.target.value);
+          setPage(1);
+        }}
       />
 
       {error && <div className="notice notice--error">{error}</div>}
-      {!students && <div className="state">{t.loading}</div>}
-      {students?.length === 0 && <p className="muted">{t.nothingFound}</p>}
+      {isLoading && <div role="status">{t.loading}</div>}
+      {!isLoading && !error && students?.length === 0 && <p className="muted">{t.nothingFound}</p>}
 
       {students && students.length > 0 && (
-        <div className="table-wrap">
+        <div className="table-wrap" aria-busy={isLoading}>
           <table className="table">
             <thead>
               <tr>
@@ -297,6 +322,29 @@ export function StudentsPage() {
             </tbody>
           </table>
         </div>
+      )}
+      {total > 0 && (
+        <nav className="student-pagination" aria-label={t.studentPagination}>
+          <button
+            type="button"
+            className="btn"
+            disabled={isLoading || page <= 1}
+            onClick={() => setPage((current) => current - 1)}
+          >
+            {t.previousPage}
+          </button>
+          <span aria-live="polite">
+            {t.studentPageSummary(page, pageCount, total)}
+          </span>
+          <button
+            type="button"
+            className="btn"
+            disabled={isLoading || page >= pageCount}
+            onClick={() => setPage((current) => current + 1)}
+          >
+            {t.nextPage}
+          </button>
+        </nav>
       )}
     </div>
   );

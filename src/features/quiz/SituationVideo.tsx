@@ -39,12 +39,16 @@ export function SituationVideo({
     // here guarantees the element is muted before play() is attempted.
     video.muted = muted;
     video.currentTime = 0;
+    setIsPlaying(false);
     if (autoPlay) {
       // Autoplay can still be refused (a device in low-power mode, for
       // instance); preload="auto" means the first frame is already painted, so
       // the student sees the situation even when it does not start on its own.
       void video.play().catch(() => setIsPlaying(false));
     }
+    return () => {
+      video.pause();
+    };
   }, [src, autoPlay, muted]);
 
   function replay(): void {
