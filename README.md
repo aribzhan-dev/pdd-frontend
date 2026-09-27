@@ -63,6 +63,19 @@ npm run typecheck
 npm run build      # результат в dist/
 ```
 
+Проверка мобильного видео (отдельный терминал при запущенном `npm run dev`):
+
+```bash
+npx playwright install chromium
+npm run test:quiz-media
+```
+
+Для другого порта задайте `PDD_TEST_URL=http://127.0.0.1:5177`.
+Для установленного Chrome задайте `PDD_BROWSER_CHANNEL=chrome`.
+Тесты используют вымышленные ответы API и не обращаются к реальной базе или
+видеохостингу. Проверяются портретный и альбомный режимы телефона, широкий
+viewport на телефоне, планшет и компьютер, возврат к вопросу и перезагрузка.
+
 ## Деплой
 
 `npm run build` и раздача `dist/` через nginx с `try_files $uri /index.html`:

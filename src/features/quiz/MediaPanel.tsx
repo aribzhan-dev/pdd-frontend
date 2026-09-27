@@ -6,38 +6,24 @@
 // Many questions share one file, so hundreds resolve to the same URL and the
 // browser caches it once.
 
-import { useSyncExternalStore } from "react";
-
 import { SituationVideo } from "@/features/quiz/SituationVideo";
 import { useStrings } from "@/i18n/LanguageContext";
 import type { Media } from "@/types/api";
 
 interface MediaPanelProps {
+  isPhone: boolean;
   image: Media | null;
   situationVideo: Media | null;
   explanationVideoUrl: string | null;
 }
 
-// Keep the phone cutoff aligned with quiz.css. Tablets retain both players.
-const PHONE_QUERY = "(max-width: 600px)";
-
-function subscribeToPhoneSize(onChange: () => void) {
-  const query = window.matchMedia(PHONE_QUERY);
-  query.addEventListener("change", onChange);
-  return () => query.removeEventListener("change", onChange);
-}
-
-function isPhoneSize() {
-  return window.matchMedia(PHONE_QUERY).matches;
-}
-
 export function MediaPanel({
+  isPhone,
   image,
   situationVideo,
   explanationVideoUrl,
 }: MediaPanelProps) {
   const t = useStrings();
-  const isPhone = useSyncExternalStore(subscribeToPhoneSize, isPhoneSize, () => false);
   // Unmount the situation on phones, rather than hiding a still-playing video.
   const showSituation = !isPhone || !explanationVideoUrl;
   if (!image && !situationVideo && !explanationVideoUrl) return null;

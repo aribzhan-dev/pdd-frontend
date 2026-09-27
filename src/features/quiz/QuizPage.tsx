@@ -17,11 +17,13 @@ import { QuestionNav } from "@/features/quiz/QuestionNav";
 import { useEnterToAdvance } from "@/features/quiz/useEnterToAdvance";
 import { useQuizSession } from "@/features/quiz/useQuizSession";
 import { useLanguage } from "@/i18n/LanguageContext";
+import { usePhoneLayout } from "@/lib/usePhoneLayout";
 
 export function QuizPage() {
   const { language, setLanguage, t } = useLanguage();
   const navigate = useNavigate();
   const quiz = useQuizSession();
+  const isPhone = usePhoneLayout();
   const [isFinishing, setIsFinishing] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
@@ -86,7 +88,7 @@ export function QuizPage() {
   const unanswered = session.total_questions - session.answered_count;
 
   return (
-    <div className="quiz">
+    <div className={`quiz${isPhone ? " quiz--phone" : ""}`}>
       <ConfirmDialog
         isOpen={isConfirmOpen}
         title={t.confirmFinishTitle}
@@ -157,6 +159,7 @@ export function QuizPage() {
       <div className="quiz__body">
         <MediaPanel
           key={question.id}
+          isPhone={isPhone}
           image={question.image}
           situationVideo={question.situation_video}
           explanationVideoUrl={

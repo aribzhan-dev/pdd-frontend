@@ -250,13 +250,11 @@
 }
 
 /* Touch targets need room; a 44px control is the accepted floor. */
-@media (max-width: 600px) {
-  .clip__replay {
-    width: 2.9rem;
-    height: 2.9rem;
-    right: var(--space-2);
-    bottom: var(--space-2);
-  }
+.quiz--phone .clip__replay {
+  width: 2.9rem;
+  height: 2.9rem;
+  right: var(--space-2);
+  bottom: var(--space-2);
 }
 
 /* --- Answers --- */
@@ -358,41 +356,44 @@
   }
 }
 
-@media (max-width: 600px) {
-  .quiz {
-    padding: var(--space-3) var(--space-3) var(--space-6);
-  }
+/* The same phone detection controls media and layout, including landscape. */
+.quiz--phone {
+  padding: var(--space-3) var(--space-3) var(--space-6);
+}
 
-  .quiz__question {
-    font-size: var(--text-lg);
-    margin: var(--space-2) 0 var(--space-4);
-    text-align: left;
-  }
+.quiz--phone .quiz__body {
+  grid-template-columns: minmax(0, 1fr);
+}
 
-  .quiz__counter {
-    margin-top: var(--space-3);
-    text-align: left;
-  }
+.quiz--phone .quiz__question {
+  font-size: var(--text-lg);
+  margin: var(--space-2) 0 var(--space-4);
+  text-align: left;
+}
 
-  .chip {
-    min-width: 2rem;
-    height: 2rem;
-    font-size: var(--text-xs);
-  }
+.quiz--phone .quiz__counter {
+  margin-top: var(--space-3);
+  text-align: left;
+}
 
-  .answer {
-    padding: var(--space-3);
-  }
+.quiz--phone .chip {
+  min-width: 2rem;
+  height: 2rem;
+  font-size: var(--text-xs);
+}
 
-  .quiz__actions {
-    flex-direction: column;
-    align-items: stretch;
-    gap: var(--space-2);
-  }
+.quiz--phone .answer {
+  padding: var(--space-3);
+}
 
-  .quiz__actions .btn {
-    width: 100%;
-  }
+.quiz--phone .quiz__actions {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-2);
+}
+
+.quiz--phone .quiz__actions .btn {
+  width: 100%;
 }
 
 /* --- Exam countdown --- */
